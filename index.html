@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<title>Working with Time and Timezones</title>
+<meta charset="utf-8"/>
+<script src="https://www.w3.org/Tools/respec/respec-w3c" class="remove"></script>
+<script class="remove">
+      var respecConfig = {
+          // specification status (e.g. WD, LCWD, WG-NOTE, etc.). If in doubt use ED.
+          specStatus:           "ED",
+          //publishDate:  		"2021-07-08",
+          previousPublishDate:  "2011-07-05",
+          previousMaturity:  	"WG-NOTE",
+
+
+          noRecTrack:           true,
+          shortName:            "timezone",
+          copyrightStart: 		"2022",
+          edDraftURI:   		"https://w3c.github.io/timezone/",
+
+          // if this is a LCWD, uncomment and set the end of its review period
+          // lcEnd: "2009-08-05",
+
+          // editors, add as many as you like
+          // only "name" is required
+          //authors:  [
+          //    { name: "Person", mailto: "someone@example.com",
+          //      company: "Invited Expert" },
+		  //	     ],
+          editors:  [
+                { name: "Addison Phillips", mailto: "addison@amazon.com", company: "Amazon", w3cid: 33573 }
+                ],
+         
+
+		
+		  github: "w3c/timezone",
+		  group: "i18n",
+		  
+          };
+    </script>
+<!--link rel="stylesheet" href="local.css" /-->
+<style>
+.letter_anchor {
+    font-weight: bold;
+    color: #66cc00;
+    font-size: 140%;
+    margin-block-start: 3em;
+    color: #54A800;
+    }
+#link_list a {
+    font-weight: bold;
+    
+    font-size: 120%;
+    color: #66cc00;
+    min-width: 1.5em;
+    display: inline-block;
+    text-align: center;
+    color: #54A800;
+    }
+#link_list a:hover {
+    background-color: antiquewhite;
+    }
+.termref {
+    font-style: italic;
+    text-decoration: underline dotted;
+    }
+.alt_name {
+    font-weight: bold;
+    font-style: italic;
+    }
+.see-also {
+    font-size: 80%;
+    font-style: italic;
+    }
+</style>
+<link rel="stylesheet" href="local.css">
+</head>
+
+<body>
+<div id="abstract">
+  <p>This document contains guidelines and best practices for working with time and time zones in applications and document formats. Use cases are provided to help choose an approach that ensures that geographically distributed applications work well with date and time values. This document also aims to provide a basic understanding and vocabulary for talking about time and time handling in software, a source of confusion for many developers and content authors on the Web.</p>
+</div>
+
+
+<div id="sotd">
+  <p>We welcome comments on this document, but to make it easier to track them, please raise separate issues for each comment, and point to the section you are commenting on using a URL.</p>
+</div>
+
+<section>
+<h2 id="introduction">Introduction</h2>
+
+<p>One common requirement for applications is the need to deal with dates, times, or durations. Working with time-related data can be complex because values are related to calendars and timekeeping rules, which themselves can be somewhat arcane. One of these complexities in working with time-related data is the effect of time zone on the handling and presentation of the data.</p>
+
+<p>This document contains guidelines and best practices for working with date and time values, including time zones, in applications and document formats. Use cases are provided to help choose an approach that ensures that geographically distributed applications work well with date and time values. This document also aims to provide a basic understanding and vocabulary for talking about time, a source of confusion for many developers and content authors on the Web.</p>
+
+<aside class="note">
+   <p>In this document [[RFC2119]] keywords have their usual meaning. Best practices and definitions are set off from the remainder of the text with special formatting.</p>
+   <p class="advisement">Best practices appear with a different background color and decoration like this.</p>
+   <p class="definition">Definitions appear with a different background color and decoration like this.</p>
+   <p class="issue-example">Gaps or recommendations for future work appear with a different background color and decoration like this.</p>
+</aside>
+</section>
+
+<section>
+<h2 id="history">A Brief History of Timekeeping</h2>
+
+<p>Computer systems tell time differently than people do. So it is helpful to understand how time works within computers as well as in the real world in order to get a handle on how to get the results that you want. This description is necessarily simplified.</p>
+
+<p>Timekeeping has its roots in observable celestial events, such as sunrise, sunset, the longest/shortest day of the year, the phases of the moon, or the position of the constellations. This is called <a>observed time</a> and underpin the various customary systems for measuring time. For convenience, days are broken up into arbitrary units such as hours, minutes, and seconds or grouped to form weeks. Years are numbered from significant events or organized into eras. Each unique cultural system for organizing time forms a <a>calendar</a> or <a>chronology</a>.</p>
+
+<p>Gradually, over time, most chronologies have weakened or sometimes removed some of the ties to the original observational basis for events. For example, the Gregorian calendar's months do not correspond to the lunar cycle. Other calendars retain stronger linkages to specific celestial events. For example, most Islamic calendars use actual solar or lunar observations to determine the start of specific periods or months.</p>
+
+<p>Mechanical timekeeping allows for more precision and standardization in counting or measuring events. We refer to the dates and times experienced in a given location as <a>wall time</a> because the date or time can be read from a printed calendar or a clock mounted on the wall.</p>
+
+<p>The advent of speed-of-light communication (such as the telegraph) and efficient means of travel (such as railroads) meant that timekeeping based on local observations (such as "local noon") became inconvenient: it is difficult to manage schedules when each locality keeps its own clock! Even relatively small travel distances produce measurable differences in observed time. As a result, synchronization of different regions that observe the same calendar and wall time became necessary, resulting in the advent of time zones.</p>
+
+<p>Observed time has many disadvantages computationally. Observed events are not always predictable or convenient to use. The advent of mechanical timekeeping has allowed a different kind of time to flourish: <a>incremental time</a> based on a monotonic progression of fixed units. In some cases, incremental time is merely a prediction of when an event might be observed.</p>
+
+<p>The modern standardized system of timekeeping in computer systems is generally based on a few core standards. <a>Universal Coordinated Time</a> (or "UTC"), adopted in 1972 CE, is used for global synchronization of clocks and to define local time zone variations. Many systems set computer clocks using the UNIX epoch (counting time from January 1, 1970 in UTC). Standards such as [[ISO8601]] or [[RFC3339]] provide serialization schemes for the interchange of date and time values and most programming languagues or data formats provide data structures for storing or exchanging date and time values. These types of systems are usually based on the <a>ISO Chronology</a> (also known as the <em>Gregorian calendar</em>), although they can be converted to other systems, such as the one of the Islamic calendars, the Ethiopic or Chinese solar-lunar calendars, and so forth.</p>
+
+<section>
+<h3>Incremental Time</h3>
+
+<p><a>Incremental time</a> measures time using fixed integer units that increase monotonically from a specific point in time (called the "epoch"). Most programming languages and operating environments provide or use incremental time for working with time values. Incremental time is not usually seen directly by users, but is formatted into <a>wall time</a> for human consumption.</p>
+
+<p>Date and time values based on incremental time are time-zone-independent, since at any given moment it is the same time in UTC everywhere: the values can be transformed for display for any particular time zone or offset, but the value itself is not tied to a specific location.</p>
+
+<p>Not all incremental time representations are tied to an epoch. A monotonic clock system might just be tied to the last time the clock was restarted or some other event.</p>
+
+<p>Since incremental time values are just integers, any two time values can be put into order as a sequence of events just by comparing the values. That is, any set of incremental time values attached to a specific <a>chronology</a> form a <a>timeline</a>.</p>
+</section>
+
+<section>
+<h3>Floating Time</h3>
+
+<p>A <a>floating time</a> is a date or time value that isn’t tied to a specific instant in time and whose interpretation doesn't depend on time zone.</p>
+
+<p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
+
+<p>France has a number of overseas departments which do not share a time zone with Metropolitan France. In this example, we'll look at three French time zones: <code>Europe/Paris</code>, <code>Pacific/Noumea</code> (the time zone used in New Caledonia), and <code>Pacific/Tahiti</code> (one of the timezones in French Polynesia).</p>
+
+<p>New Caledonia is one of (but not the) first time zones in France to observe the holiday. Tahiti is one of (but not the) last in France to observe it. The table below shows the dates and times in each of the time zones as Bastille Day is observed around the world:</p>
+
+<table>
+	<thead>
+		<tr>
+		<th></th>
+		<th colspan=2>Europe/Paris</th>
+		<th colspan=2>Pacific/Noumea</th>
+		<th colspan=2>Pacific/Tahiti</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Europe/Paris</td>
+			<td><strong>2022-07-14<br>midnight</strong></td>
+			<td><strong>2022-07-15<br>midnight</strong></td>
+			<td>2022-07-13 3PM</td>
+			<td>2022-07-14 3PM</td>
+			<td>2022-07-14 noon</td>
+			<td>2022-07-15 noon</td>
+		</tr>
+			<td>Pacific/Noumea</td>
+			<td>2022-07-14 9AM</td>
+			<td>2022-07-15 9AM</td>
+			<td><strong>2022-07-14<br>midnight</strong></td>
+			<td><strong>2022-07-15<br>midnight</strong></td>
+			<td>2022-07-14 9PM</td>
+			<td>2022-07-15 9PM</td>
+        <tr>
+        </tr>
+        <tr>
+			<td>Pacific/Tahiti</td>
+			<td>2022-07-13 noon</td>
+			<td>2022-07-14 noon</td>
+			<td>2022-07-13 3AM</td>
+			<td>2022-07-14 3AM</td>
+			<td><strong>2022-07-14<br>midnight</strong></td>
+			<td><strong>2022-07-15<br>midnight</strong></td>
+		</tr>
+		
+	</tbody>
+</table>
+
+<p>Other examples of floating values include your birthdate, company holidays, and hours of operation (as a policy, say, rather than for a specific site). Many of the time values displayed to users work best as floating date and time values—common examples include delivery times, release dates, or publication dates.</p>
+</section>
+
+<section>
+<h3 id="definitions">Definitions</h3>
+
+ <p class=issue>I've adopted mostly Java/Joda's terminology here (chronology) vs. using other terms (such as 'calendar').</p>
+ <p class=definition><dfn id="chronology">Chronology</dfn> or <dfn id="calendar">calendar</dfn> A timekeeping system used to organize dates and times.</p>
+ <p>Many different chronologies and calendars have been used or are in use today around the world. These different systems have varying rules for organizing and dividing time values.</p>
+ <p class=definition><dfn id="iso_chronology">ISO Chronology</dfn> is based on the [[ISO8601]] standard, which is the <em>de facto</em> world calendar. This system is based on the Gregorian calendar.</p>
+ <p class=definition><dfn id="observed_time">Observed Time</dfn> A moment in time based on an observed event or events. For example, "local noon", the shortest day or the year, or the first new moon.</p>
+ <p class=definition><dfn id="wall time">Wall Time</dfn> (Informal) A date or time value as experienced by human beings, so called because the value might be what is shown on a paper calendar or analog clock mounted on the wall in a given location at a given moment.</p>
+ <p class=definition><dfn id="epoch">Epoch</dfn> A specific moment in time that serves as a reference point for a given <a>chronology</a>. The most common epoch is the Unix Epoch, which is used by the most common computer timekeeping systems and measures incremental time values from midnight, January 1, 1970 in the UTC time zone, i.e. from <code>1970-01-01T00:00:00.000Z</code></p>
+ <p class=definition><dfn id="timeline">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
+ <p class=definition><dfn id="incremental_time">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (<a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
+ <p class=definition><dfn id="floating_time">Floating Time</dfn> A date or time value that is not fixed to a specific incremental time value or time zone. When you apply time zone information to floating times they produce a range of acceptable incremental time values, because they represent a nominal time which is described in the same way in all time zones around the world.</p>
+ <p class="example">Saturday 11 June 2016 happens to be the date of the British Queen's official 90th birthday. The specific time when 11th June starts or ends in Britain may actually be on Friday or Sunday in other countries, because their clocks are set differently, but the date of the event is always referred to as Saturday 11 June. Other examples of floating time events include the publication date for an issue of a newspaper, the date the Tokyo Olympics starts, the time the New Year starts, office hours set to "9 to 5" regardless of time zone, and so on.</p>
+ <p class=definition><dfn id="utc">Universal Coordinated Time</dfn> or <strong>UTC</strong>. is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
+</section>
+
+
+<section>
+<h3>Time Zones</h3>
+</section>
+</section>
+
+<section>
+<h3>Serializations</h3>
+
+<table>
+	<thead>
+		<tr>
+		<th>Name</th>
+		<th>Example</th>
+		<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Instant, Timestamp</td>
+			<td><code>2007-01-01T01:00:00.000Z</code></td>
+			<td>An <a>incremental time</a> (instant on the timeline) with UTC offset.</td>
+		</tr>
+		<tr>
+			<td>OffsetDateTime</td>
+			<td><code>2007-01-01T01:00:00.000+01:00</code></td>
+			<td>An <a>incremental time</a> with an explicit offset from UTC.</td>
+		</tr>
+		<tr>
+			<td>Zoned Offset DateTime</td>
+			<td><code>2007-01-01T01:00:00.000+01:00[America/Chicago]</code></td>
+			<td>An <a>incremental time</a> with an offset <em>and</em> a specific time zone. The time zone should be used when formatting the value for display. Note that the offset and the time zone do not have to match. Generally the offset date time is converted to an instant on the timeline using the offset provided and then the time zone specified is attached to that moment.</td>
+		</tr>
+		<tr>
+			<td>Zoned Instant</td>
+			<td><code>2007-01-01T01:00:00.000Z[America/Chicago]</code></td>
+			<td>An <a>incremental time</a> with a specific time zone that should be used when formatting the value for display.</td>
+		</tr>
+		<tr>
+			<td>Zoned Local Date Time</td>
+			<td><code>2007-01-01T01:00:00.000[America/Chicago]</code></td>
+			<td>A <a>floating time</a> value with both a date and a time plus a specific time zone that should be used when displaying the time value. This serialization is equivalent to a zoned offset date time when the offsets match.</td>
+		</tr>
+		<tr>
+			<td>Local Date Time</td>
+			<td><code>2007-01-01T01:00:00.000</code></td>
+			<td>A <a>floating time</a> value containing both a date and a time.</td>
+		</tr>
+		<tr>
+			<td>Local Date</td>
+			<td><code>2007-01-01</code></td>
+			<td>A <a>floating time</a> with a date but no time component.</td>
+		</tr>
+		<tr>
+			<td>Local Time</td>
+			<td><code>00:00:00.000</code></td>
+			<td>A <a>floating time</a> with a time but no date component.</td>
+		</tr>
+		<tr>
+			<td>Year-Month</td>
+			<td><code>2007-01</code></td>
+			<td>A <a>floating time</a> value containing only a year and a month. Similar to [[XMLSchema-2]] <code>gYearMonth</code>.</td>
+		</tr>
+		<tr>
+			<td>Year</td>
+			<td><code>2007</code></td>
+			<td>A <a>floating time</a> value containing only a year. Similar to [[XMLSchema-2]] <code>gYear</code>.</td>
+		</tr>
+		<tr>
+			<td>Month-Day</td>
+			<td><code>01-01</code></td>
+			<td>A <a>floating time</a> value containing only a month and day. Similar to [[XMLSchema-2]] <code>gMonthDay</code>.</td>
+		</tr>
+	</tbody>
+</table>
+
+</section>
+
+<section>
+	<h2>Use Cases</h2>
+	
+	<p>There are a number of ways applications can use date and time values. In this section we examine the different common use cases and the serializations or data structures to use for each.</p>
+	
+<section>
+	<h3>Timestamps</h3>
+	
+	<p class=advisement>Use the <code>Instant</code> type for timestamp values.</p>	
+
+	<p>If your application can accurately generate incremental and/or field-based times based on UTC and the events are not tied to specific local time, all that is needed is the timestamp value itself. That is, if your application never needs to recover what the actual wall time was when event occurred and only cares about relative ordering of events. For example, if you merge log files from many machines together or if you are recording events in a log, a timestamp is perfectly adequate. For these types of time events, an Instant is sufficient.</p>
+
+    <p>In fact, it is often desirable to normalize time values to UTC (or a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
+</section>
+
+<section>
+	<h3>Past Events</h3>
+	
+	<p class=advisement>You SHOULD use <code>ZonedInstant</code> type for past events.</p>
+	<p class=advisement>You MAY use <code>ZonedInstant</code>, <code>ZonedLocalDateTime</code> or <code>ZonedOffsetDateTime</code> types for past events.</p>
+	
+	<p>For applications that deal only with events that occurred in the past (with no future events) and for which you need to know what the wall time was, the time zone of the event may be necessary additional data. Once an event is in the past, its relationship to incremental time becomes fixed and the rules for generating wall time remain static essentially forever. You might still need to know that an event occurred at <code>10:00</code> rather than at <code>14:00</code> local time. At a minimum, the <a>local time offset</a> is necessary, although knowing the complete time zone is necessary for some applications. Knowing the specific time zone allows one to reconstruct the time and its relationship to other wall times.</p>
+</section>
+
+<section>
+	<h3>Past and Future Events</h3>
+	
+	<p class=advisement>You SHOULD use <code>ZonedInstant</code> type for past and future events.</p>
+	
+	<p>If your application deals with both past and future events (for example, if you have a calendar or a meeting schedule), you’ll need additional time zone information to ensure proper time computation. At a minimum you will need the time zone, not merely an offset from UTC. This is because a future event's wall time depends on time zone related information, such as DST transitions. One issue with future events is that time zone rules can change from time to time and these may require an application to update affected data records in order to meet user’s expectations. This is because many systems actually store the time portion of the value as an incremental time and the incremental time needs to be changed if the wall time offset from UTC has been altered.</p>
+</section>
+
+<section>
+	<h3>Floating Time Values</h3>
+</section>
+
+<section>
+	<h3>Recurring Events</h3>
+	
+	<p>A recurring event, such as a regular meeting, is usually defined by a set of rules that express a user's intent. In some cases, the user intends for the event to recur at a specific local time (and thus, wants to tie it to local time changes, such as DST transitions). In other cases, the user wants the time tied to another time zone, to a specific UTC offset, or to other events. So, for example, a recurring weekly event might need to add 167, 168, or 169 hours to "last week's occurrence" of an event to compute this week's start time, depending on whether a DST transition has occurred and which direction the transition was in.</p>
+</section>
+
+<section>
+	<h3>Floating and Unfloating Time</h3>
+</section>
+</section>
+
+<section>
+	<h3>Leap Seconds</h3>
+	
+	<p>One quirk of timekeeping is the need for leap seconds. The Earth's rotation is not even and, in general, is slowing down. To keep <a>observed time</a> and <a>incremental time</a> in sync, the [<a href="http://maia.usno.navy.mil/">International Earth Rotation Service</a>] occasionally mandates a "leap second". A leap second usually occurs once or sometimes twice per year and always takes the form of an additional second added to the last minute of the day. Usually the leap second is added to December 31st or June 30th.</p>
+
+    <p>Most incremental time values (do not keep track of leap seconds in their incremental time values. What happens is:</p>
+
+    <ol>
+		<li>Eventually, system clocks are updated externally by the user or via a service such as NTP. Most computer clocks exhibit some amount of clock drift anyway, so this sort of maintenance is not unusual.</li>
+        <li>No list is kept of past or future leap seconds (and no list exists for dates preceding the advent of leap seconds in 1972), so software often doesn't include leap seconds when calculating the difference between two time values. For example, the difference between 12:00:00 Noon on December 31st and 12:00:00 Noon on the following January 1st will always be 86400 seconds, even if a leap second was mandated for the intervening midnight.</li>
+        <li>There may be no way to represent a leap second time value using your local incremental units and may not be a means of representing a leap second using field-based units. For example, while Java's <code>java.util.Calendar</code> class allows for a "61st" second of a minute to accommodate leap seconds, if you set a Java Calendar to <kbd>December 31, 2008 23:59:60 UTC</kbd> (a particular leap second value) and then convert that to a <code>java.util.Date</code> in order to print it out, you might see: "January 1, 2009 00:00:00 UTC" because the <code>Date</code> object cannot represent leap second values.</li>
+     </ol>
+
+     <p>If your application cares about or is sensitive to leap seconds, special care must be taken to deal with the loss of leap second precision.</p>
+</p>
+</section>
+
+<section class="appendix" id="Acknowledgements">
+<h2>Acknowledgements</h2>
+
+<p>This document is based on several previous documents. The original Working Group Note (<a href="http://www.w3.org/TR/2005/NOTE-timezone-20051013/">Working With Timezones</a>) was written by Martin Dürst, Mark Davis, Felix Sasaki, and Addison Phillips. Portions of this document, notably the introduction, were adapted from an older document ("It's about time") and from a Unicode conference presentation ("Time Out of Joint") by Addison Phillips. Information on time zone scenarios is based on work by Norbert Lindenberg. Information about temporal serializations and use cases is based on work by CJ Butenhoff.</p>
+</body>
+</html>
