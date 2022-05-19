@@ -39,6 +39,45 @@
           };
     </script>
 <!--link rel="stylesheet" href="local.css" /-->
+
+<script>
+	   const zonesToTest = [ "UTC", "Pacific/Noumea", "Australia/Adelaide", "Asia/Tokyo", 
+		                       "Asia/Shanghai", "Africa/Nairobi", "Europe/Paris", "America/New_York", "Pacific/Tahiti"];
+		 
+	   function currTimeUpdate() {
+		   var fmt = new Intl.DateTimeFormat('en-US', {dateStyle: 'full', timeStyle: 'medium'});
+		   
+		   const now = new Date();
+		   var currTimeSpan = document.getElementById('currTime');
+		   currTimeSpan.textContent = Number(now);
+		   currTimeSpan = document.getElementById('currTimeDisplay');
+		   currTimeSpan.textContent = fmt.format(now);
+		   var currZone = document.getElementById('currZone');
+		   currZone.textContent = fmt.resolvedOptions().timeZone;
+		   
+		   var tbody = document.getElementById('zoneOutTBody');
+
+		   for (const zone of zonesToTest) {
+			   var datefmt = new Intl.DateTimeFormat('en-US', { timeZone: zone, dateStyle: 'full' });
+			   var timefmt = new Intl.DateTimeFormat('en-US', { timeZone: zone, timeStyle: 'medium' });
+			   
+			   var tr = document.createElement('tr'); // table row
+			   var td = document.createElement('td');
+			   var code = document.createElement('code');
+			   code.textContent = zone;
+			   td.append(code);
+			   tr.append(td);
+			   td = document.createElement('td');
+			   td.textContent = datefmt.format(now);
+			   tr.append(td);
+			   td = document.createElement('td');
+			   td.textContent = timefmt.format(now);
+			   tr.append(td);
+			   
+			   tbody.append(tr);
+	       }
+	   }
+</script>
 <style>
 .letter_anchor {
     font-weight: bold;
@@ -76,7 +115,7 @@
 <link rel="stylesheet" href="local.css">
 </head>
 
-<body>
+<body onload="currTimeUpdate()">
 <div id="abstract">
   <p>This document contains guidelines and best practices for working with time and time zones in applications and document formats. Use cases are provided to help choose an approach that ensures that geographically distributed applications work well with date and time values. This document also aims to provide a basic understanding and vocabulary for talking about time and time handling in software, a source of confusion for many developers and content authors on the Web.</p>
 </div>
@@ -99,6 +138,27 @@
    <p class="definition">Definitions appear with a different background color and decoration like this.</p>
    <p class="issue-example">Gaps or recommendations for future work appear with a different background color and decoration like this.</p>
 </aside>
+</section>
+
+<section>
+<h2>Why You Should Read This</h2>
+
+<p>Working with date and time values, including the effect of time zones on the display and processing of these values is an area where many Web developers struggle. Understanding how date and time values work and how to manage these values in applications or specify them in standards can prevent many problems.</p>
+
+<p>Your browser thinks that the time is: <code id=currTimeDisplay></code> (<code id=currTime></code>)</p>
+<p>Your browser's time zone is: <code id=currZone></code></p>
+<p>In other places around the world, the same <kbd>Date</kbd> value displays a different date and time:</p>
+<div id=zoneOut>
+<table>
+	<thead>
+		<th>Zone</th>
+		<th>Date</th>
+		<th>Time</th>
+	</thead>
+	<tbody id=zoneOutTBody>
+	</tbody>
+</table>
+</div>
 </section>
 
 <section>
@@ -191,7 +251,7 @@
 
 <p>France has a number of overseas departments which do not share a time zone with Metropolitan France. In this example, we'll look at three French time zones: <code>Europe/Paris</code>, <code>Pacific/Noumea</code> (the time zone used in New Caledonia), and <code>Pacific/Tahiti</code> (one of the timezones in French Polynesia).</p>
 
-<p>New Caledonia is one of (but not the) first time zones in France to observe the holiday. Tahiti is one of (but not the) last in France to observe it. The table below shows the dates and times in each of the time zones as Bastille Day is observed around the world:</p>
+<p>New Caledonia is one of (but not the) first time zones in France to observe the holiday. Tahiti is one of (but not the) last in France to observe it. The table below shows the dates and times in each of the time zones as Bastille Day is observed around the world. Notice that some time incremental time values that would be "Bastille Day" in one time zone are either before or after "Bastille Day" in others:</p>
 
 <table>
 	<thead>
@@ -380,7 +440,36 @@
 </section>
 
 <section>
-	<h3>Leap Seconds</h3>
+	<h2>Additional Considerations</h2>
+
+<section>
+	<h3>Time Zone Identifiers</h3>
+	
+	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[BCP175]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
+
+    <p>In the TZ database, time zones are given IDs that usually consist of a region and exemplar city. Regions can be continents (such as Europe or America) or oceans (such as Atlantic or Pacific). An exemplar city is a city in the time zone in question that should be well-known to people using the time zone. The TZ database also supplies aliases for many IDs; for example, <kbd>Asia/Ulan Bator</kbd> is equivalent to <kbd>Asia/Ulaanbaatar</kbd>. The Common Locale Data Repository [[CLDR]] can be used to provide a localized form for the IDs: see Appendix J in [[UAX35]]. Note: some systems, such as Apple Inc.'s MacOS, provide additional exemplar cities.</p>
+    
+    <p class="example">The U.S. Pacific time zone has a TZ database ID of <kbd>America/Los_Angeles</kbd>.</p>
+    <p class=issue>add recommendation to use iana ids; to use the continent-city ones; to avoid Etc and legacy ones like US.</p>
+</section>
+
+<section>
+	<h3>Selecting the Time Zone using the Local Time Offset</h3>
+	
+	<p>Most countries are either small enough in area or, for practical reasons, choose to observe only a single time zone for the entire country. This means that knowing the region or country of the user is frequently sufficient to identify the time zone of the user as well. At the time this document was published, only twenty countries had more than one observed time zone. These countries are: Argentina, Australia, Brazil, Canada, Chile, Democratic Republic of the Congo, Ecuador, France, Greenland, Indonesia, Kazakhstan, Kiribati, Mexico, Micronesia, Mongolia, New Zealand, Portugal, Russia, Spain, and the United States.</p>
+
+    <p>Some special cases exist within this list:</p>
+
+    <ul>
+       <li><strong>Countries with maritime or overseas possessions</strong> Chile, Ecuador, France, New Zealand, and Portugal each have islands or other wide-ranging geographic areas far from the main part of the country. For example, Easter Island is part of Chile, the Galapagos Islands are part of Ecuador, and the Azores are part of Portugal. These offshore possessions are the source of additional time zones in each of these countries.</li>
+       <li><strong>France</strong> France is a special case of the above. There are several regions that are part of France, even though they might have their own ISO 3166-1 code. These include Reunion Island and French Guiana. Additionally, French Polynesia is divided into three time zones.</li>
+    </ul>
+
+    <p>Within each of the countries that observe multiple time zones, knowing the current offset and current time will usually allow you to determine the time zone accurately. An exception to this is the United States: there exist some regions, such as Arizona, whose time zone cannot be determined strictly from the current time, country/region code, and offset, although an inferred time zone will always work for current time applications (not future and past times).</p>
+</section>
+	
+<section>
+<h3>Leap Seconds</h3>
 	
 	<p>One quirk of timekeeping is the need for leap seconds. The Earth's rotation is not even and, in general, is slowing down. To keep <a>observed time</a> and <a>incremental time</a> in sync, the [<a href="http://maia.usno.navy.mil/">International Earth Rotation Service</a>] occasionally mandates a "leap second". A leap second usually occurs once or sometimes twice per year and always takes the form of an additional second added to the last minute of the day. Usually the leap second is added to December 31st or June 30th.</p>
 
@@ -394,6 +483,7 @@
 
      <p>If your application cares about or is sensitive to leap seconds, special care must be taken to deal with the loss of leap second precision.</p>
 </p>
+</section>
 </section>
 
 <section class="appendix" id="Acknowledgements">
