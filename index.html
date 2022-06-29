@@ -42,7 +42,7 @@
 
 <script>
 	   const zonesToTest = [ "UTC", "Pacific/Noumea", "Australia/Adelaide", "Asia/Tokyo", 
-		                       "Asia/Shanghai", "Africa/Nairobi", "Europe/Paris", "America/New_York", "Pacific/Tahiti"];
+		                       "Asia/Shanghai", "Africa/Nairobi", "Europe/Paris", "America/New_York", "America/Buenos_Aires", "Pacific/Tahiti"];
 		 
 	   function currTimeUpdate() {
 		   var fmt = new Intl.DateTimeFormat('en-US', {dateStyle: 'full', timeStyle: 'medium'});
@@ -138,28 +138,53 @@
    <p class="definition">Definitions appear with a different background color and decoration like this.</p>
    <p class="issue-example">Gaps or recommendations for future work appear with a different background color and decoration like this.</p>
 </aside>
-</section>
 
 <section>
 <h2>Why You Should Read This</h2>
 
 <p>Working with date and time values, including the effect of time zones on the display and processing of these values is an area where many Web developers struggle. Understanding how date and time values work and how to manage these values in applications or specify them in standards can prevent many problems.</p>
 
-<p>Your browser thinks that the time is: <code id=currTimeDisplay></code> (<code id=currTime></code>)</p>
-<p>Your browser's time zone is: <code id=currZone></code></p>
-<p>In other places around the world, the same <kbd>Date</kbd> value displays a different date and time:</p>
+<noscript>
+	<aside class="note">
+		<p><strong>This section requires JavaScript.</strong> Code demos in this document use JavaScript to demonstrate different features. Enabling JavaScript will allow you to view these demos successfully and make the document much more meaningful.</p>
+	</aside>
+</noscript>
+
+<p>When working with date and time values, the time zone and <a>locale</a> and your choices for encoding, handling, and processing date and time values can produce different and perhaps unexpected or unwanted results.</p>
+
+<p>As an example, let's consider the publication date of an online newspaper. On <em>30 April 2017</em> this newspaper published an online Sunday edition.</p>
+
+<p>Martina is a subscriber who lives in Buenos Aires, Argentina. When she visits the newspaper's web site, she is given the option of selecting which edition she wants to view. The HTML for the form control might look like this:</p>
+
+<pre>
+&lt;label for="publicationDate">Which issue would you like:&lt;/label>
+&lt;input id="publicationDate" type="datetime-local">
+</pre>
+
+<p>When Martina fills in the form and submits it, though, she is surprised to see that the edition she receives is dated <em>Saturday, 29 April 2017</em> instead. The actual newspaper is the correct Sunday edition. But the screen says the wrong date. What's going on?</p>
+
+<p>Your browser's system time is: <code id=currTimeDisplay></code> (<code id=currTime></code>) and your browser's time zone is: <code id=currZone></code>. If a friend in a different time zone views this page at the same instant you do, they might see a very different time&mdash;perhaps even on a different day:</p>
 <div id=zoneOut>
 <table>
 	<thead>
-		<th>Zone</th>
-		<th>Date</th>
+		<th style="width:30%">Zone</th>
+		<th style="width:50%">Date</th>
 		<th>Time</th>
 	</thead>
 	<tbody id=zoneOutTBody>
 	</tbody>
 </table>
 </div>
+
+<p>In Martina's case, she requested the <code>2017-04-30</code> edition. The application converted that value to an <em>incremental time</em> value at midnight on that date in UTC. Since Martina's time zone is west of UTC, her browser naturally rendered that value as a few hours earlier, which is to say, as a time on the previous day.</p>
+
 </section>
+</section>
+
+<section>
+<h2 id="howToUse">Concepts</h2>
+
+<p>This section provides the basic concepts, terminology, and background for those unfamiliar with the origins, processing, and representation of date and time values in modern computer systems.</p>
 
 <section>
 <h2 id="history">A Brief History of Timekeeping</h2>
@@ -177,6 +202,8 @@
 <p>Observed time has many disadvantages computationally. Observed events are not always predictable or convenient to use. The advent of mechanical timekeeping has allowed a different kind of time to flourish: <a>incremental time</a> based on a monotonic progression of fixed units. In some cases, incremental time is merely a prediction of when an event might be observed.</p>
 
 <p>The modern standardized system of timekeeping in computer systems is generally based on a few core standards. <a>Universal Coordinated Time</a> (or "UTC"), adopted in 1972 CE, is used for global synchronization of clocks and to define local time zone variations. Many systems set computer clocks using the UNIX epoch (counting time from January 1, 1970 in UTC). Standards such as [[ISO8601]] or [[RFC3339]] provide serialization schemes for the interchange of date and time values and most programming languagues or data formats provide data structures for storing or exchanging date and time values. These types of systems are usually based on the <a>ISO Chronology</a> (also known as the <em>Gregorian calendar</em>), although they can be converted to other systems, such as the one of the Islamic calendars, the Ethiopic or Chinese solar-lunar calendars, and so forth.</p>
+
+
 
 <section>
 <h3>What is a Time Zone?</h3>
@@ -227,6 +254,7 @@
     <aside class="example">
 		<p>Korea Standard Time and Japan Standard Time currently use the same UTC offset and neither uses summer time. However, Japan abandoned summer time in 1951, while South Korea used it last in 1988, so an application that tracks time values that reach back that far might need to track these time zones separately.</p>
     </aside>
+</section>
 </section>
 </section>
 
