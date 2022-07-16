@@ -28,7 +28,7 @@
           //      company: "Invited Expert" },
 		  //	     ],
           editors:  [
-                { name: "Addison Phillips", mailto: "addison@amazon.com", company: "Amazon", w3cid: 33573 }
+                { name: "Addison Phillips", mailto: "addisonI18N@gmail.com", company: "Invited Expert", w3cid: 33573 }
                 ],
          
 
@@ -41,8 +41,16 @@
 <!--link rel="stylesheet" href="local.css" /-->
 
 <script>
-	   const zonesToTest = [ "UTC", "Pacific/Noumea", "Australia/Adelaide", "Asia/Tokyo", 
-		                       "Asia/Shanghai", "Africa/Nairobi", "Europe/Paris", "America/New_York", "America/Buenos_Aires", "Pacific/Tahiti"];
+	   const zonesToTest = [ "UTC",
+	                         "Pacific/Noumea", 
+	                         "Australia/Adelaide", 
+	                         "Asia/Tokyo", 
+		                     "Asia/Shanghai", 
+		                     "Africa/Nairobi", 
+		                     "Europe/Paris", 
+		                     "America/New_York", 
+		                     "America/Buenos_Aires", 
+		                     "Pacific/Tahiti"];
 		 
 	   function currTimeUpdate() {
 		   var fmt = new Intl.DateTimeFormat('en-US', {dateStyle: 'full', timeStyle: 'medium'});
@@ -142,7 +150,7 @@
 <section>
 <h2>Why You Should Read This</h2>
 
-<p>Working with date and time values, including the effect of time zones on the display and processing of these values is an area where many Web developers struggle. Understanding how date and time values work and how to manage these values in applications or specify them in standards can prevent many problems.</p>
+<p>Working with date and time values, including the effect of time zones on the display and processing of these values, can be confusing. By understanding how date and time values work and how to manage these values in applications or specify them in standards, you can prevent many problems.</p>
 
 <noscript>
 	<aside class="note">
@@ -150,18 +158,30 @@
 	</aside>
 </noscript>
 
-<p>When working with date and time values, the time zone and <a>locale</a> and your choices for encoding, handling, and processing date and time values can produce different and perhaps unexpected or unwanted results.</p>
+<p>When working with date and time values, the time zone, the <a>locale</a>, and your choices for encoding, handling, and processing date and time values can produce different and perhaps unexpected or unwanted results.</p>
 
-<p>As an example, let's consider the publication date of an online newspaper. On <em>30 April 2017</em> this newspaper published an online Sunday edition.</p>
+<aside class="example" id="six-friends" title="Six Friends">
 
-<p>Martina is a subscriber who lives in Buenos Aires, Argentina. When she visits the newspaper's web site, she is given the option of selecting which edition she wants to view. The HTML for the form control might look like this:</p>
+<p>Six people attend college together and become friends. After college, they go their separate ways, vowing to remain in contact. Alice lives in New York, USA. Martina lives in Buenos Aires, Argentina. Lucas lives in Santiago, Chile. Minato lives in Tokyo, Japan. Miriam lives in Dubai, UAE. And Senthil lives in Bengaluru, India.</p>
 
-<pre>
-&lt;label for="publicationDate">Which issue would you like:&lt;/label>
-&lt;input id="publicationDate" type="datetime-local">
-</pre>
+<p>Alice organizes a monthly call with her friends, starting in July. New York City and Santiago have the same offset during this part of the year. In September, Santiago, Chile, switches to Summer Time and Lucas almost misses the call because the reminder was an hour late. Alice makes a mental note that adjust her own schedule when the US switches to standard time later in the month, but the friends are shocked when their call cuts off in the middle. What went wrong?</p>
 
-<p>When Martina fills in the form and submits it, though, she is surprised to see that the edition she receives is dated <em>Saturday, 29 April 2017</em> instead. The actual newspaper is the correct Sunday edition. But the screen says the wrong date. What's going on?</p>
+<p>At the next call, Alice announces that she’s written an article that appeared in the Sunday edition of a local newspaper. Martina and Lucas both buy a digital copy of the Sunday edition, but are confused to find that the edition they are reading is for Monday and doesn't include Alice's article. What went wrong?</p>
+
+<p>In her article, Alice mentions a new product her employer is releasing. The new product ships on X, and all six friends order it. Two of the friends&mdash;Minato, who lives in Tokyo, Japan, and Miriam, who lives in X&mdash;don’t receive their orders, even after the other friends have received theirs. Checking the shipment tracker, they see:</p>
+
+<p>What went wrong? In each case, software failed to account for date and time values or the effect of time zones correctly. Understanding how to handle date and time values is the subject of this document.</p>
+
+</aside>
+
+
+<h5 id="scenario_2">Scenario #2: Tracking delivery</h5>
+
+<p>Minato, a customer in Tokyo, and Miriam, a customer in Jerusalem, are both excited about a new product that will be released on <code>Thursday, July 14, 2022</code>. They have placed pre-orders for the product and receive automated notifications that allows them to track their order once it has shipped from the United States.</p>
+
+<p>Minato's product ships from New York to Los Angeles and then from Los Angeles to Tokyo. It is then placed on a truck and delivered to his house. Miriam's product ships from New York to London, then on to Jerusalem before being placed on a truck and delivered to her house. Here's what each of them see:</p>
+
+
 
 <p>Your browser's system time is: <code id=currTimeDisplay></code> (<code id=currTime></code>) and your browser's time zone is: <code id=currZone></code>. If a friend in a different time zone views this page at the same instant you do, they might see a very different time&mdash;perhaps even on a different day:</p>
 <div id=zoneOut>
@@ -176,7 +196,7 @@
 </table>
 </div>
 
-<p>In Martina's case, she requested the <code>2017-04-30</code> edition. The application converted that value to an <em>incremental time</em> value at midnight on that date in UTC. Since Martina's time zone is west of UTC, her browser naturally rendered that value as a few hours earlier, which is to say, as a time on the previous day.</p>
+
 
 </section>
 </section>
@@ -477,8 +497,64 @@
 
     <p>In the TZ database, time zones are given IDs that usually consist of a region and exemplar city. Regions can be continents (such as Europe or America) or oceans (such as Atlantic or Pacific). An exemplar city is a city in the time zone in question that should be well-known to people using the time zone. The TZ database also supplies aliases for many IDs; for example, <kbd>Asia/Ulan Bator</kbd> is equivalent to <kbd>Asia/Ulaanbaatar</kbd>. The Common Locale Data Repository [[CLDR]] can be used to provide a localized form for the IDs: see Appendix J in [[UAX35]]. Note: some systems, such as Apple Inc.'s MacOS, provide additional exemplar cities.</p>
     
-    <p class="example">The U.S. Pacific time zone has a TZ database ID of <kbd>America/Los_Angeles</kbd>.</p>
-    <p class=issue>add recommendation to use iana ids; to use the continent-city ones; to avoid Etc and legacy ones like US.</p>
+    <aside class="example" title="Examples of time zone IDs">
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><kbd>America/Los_Angeles</kbd></td>
+					<td>US Pacific time zone</td>
+				</tr>
+    			<tr>
+					<td><kbd>Europe/London</kbd></td>
+					<td>UK time; not to be confused with UTC, since this zone observes Summer Time</td>
+				</tr>
+				<tr>
+					<td><kbd>Asia/Beijing</kbd></td>
+					<td>China Standard Time</td>
+				</tr>
+				<tr>
+					<td><kbd>Asia/Calcutta</kbd></td>
+					<td>India Standard Time; observes a 30 minute offset</td>
+				</tr>
+				<tr>
+					<td><kbd>Australia/Sydney</kbd></td>
+					<td>Sydney time</td>
+				</tr>
+				<tr>
+					<td><kbd>Pacific/Kiritimati</kbd></td>
+					<td>Line Islands time; one of the earliest time zones in the world</td>
+				</tr>
+				<tr>
+					<td><kbd>Pacific/Midway</kbd></td>
+					<td>Samoa time; one of the last time zones in the world</td>
+				</tr>
+				<tr>
+					<td><kbd>Atlantic/Azores</kbd></td>
+					<td>Azorian time</td>
+				</tr>
+                <tr>
+					<td><kbd>America/Argentina/San_Luis</kbd></td>
+					<td>Western Argentina time; one of few modern tripartite IDs</td>
+				</tr>
+				<tr>
+					<td><kbd>Australia/Eucla</kbd></td>
+					<td>Australia Central Western time; observes a 45 minute offset</td>
+				</tr>
+				
+			</tbody>
+		</table>
+    </aside>
+    
+    <p class="advisement">Specify the use of IANA time zone IDs in standards, protocols, or document formats as the identifier for time zones.</p>
+    <p class="advisement">Avoid special purpose time zone IDs, such as those beginning with <kbd>Etc/</kbd>.</p>
+    <p class="advisement">Use <code>continent/city</code> IDs in preference to legacy zone IDs such as those starting with <kbd>US/</kbd>.</p>
+
 </section>
 
 <section>
@@ -490,7 +566,7 @@
 
     <ul>
        <li><strong>Countries with maritime or overseas possessions</strong> Chile, Ecuador, France, New Zealand, and Portugal each have islands or other wide-ranging geographic areas far from the main part of the country. For example, Easter Island is part of Chile, the Galapagos Islands are part of Ecuador, and the Azores are part of Portugal. These offshore possessions are the source of additional time zones in each of these countries.</li>
-       <li><strong>France</strong> France is a special case of the above. There are several regions that are part of France, even though they might have their own ISO 3166-1 code. These include Reunion Island and French Guiana. Additionally, French Polynesia is divided into three time zones.</li>
+       <li><strong>France</strong> France is a special case of the above. There are several regions that are part of France, even though they might have their own ISO 3166-1 code. These include Reunion Island (in the Indian Ocean) and French Guiana (in South America). Additionally, French Polynesia is divided into three time zones.</li>
     </ul>
 
     <p>Within each of the countries that observe multiple time zones, knowing the current offset and current time will usually allow you to determine the time zone accurately. An exception to this is the United States: there exist some regions, such as Arizona, whose time zone cannot be determined strictly from the current time, country/region code, and offset, although an inferred time zone will always work for current time applications (not future and past times).</p>
