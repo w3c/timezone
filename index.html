@@ -448,17 +448,31 @@
 <section>
 	<h3>Timestamps</h3>
 	
-	<p class=advisement>Use the <code>Instant</code> type for timestamp values.</p>	
+	<p class=advisement>Use the <code>Instant</code> type for timestamp values.</p>
 
 	<p>If your application can accurately generate incremental and/or field-based times based on UTC and the events are not tied to specific local time, all that is needed is the timestamp value itself. That is, if your application never needs to recover what the actual wall time was when event occurred and only cares about relative ordering of events. For example, if you merge log files from many machines together or if you are recording events in a log, a timestamp is perfectly adequate. For these types of time events, an Instant is sufficient.</p>
 
     <p>In fact, it is often desirable to normalize time values to UTC (or a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
+    
 </section>
 
 <section>
-	<h3>Past Events</h3>
+	<h3>Handling past or future events</h3>
 	
-	<p class=advisement>You SHOULD use <code>ZonedInstant</code> type for past events.</p>
+	<p>Many applications need to work with events have have already occured, events in the future, or both. When working with these types of values, additional care needs to be used to avoid problems with the way that time zones interact with event planning.</p>
+	
+	<aside class="example" title="Example of time zone change effects on a future event">
+	<p>For example, consider an application that defines certificates. Each certificate has a date-time value that is the "start of authority" (<code>validFrom</code>) moment and a date-time value that is the "end of authority" (<code>validUntil</code>) moment.</p>
+	
+	<p>Imagine that Certificate A is generated in the time zone <code>America/Los_Angeles</code>. This time zone has a raw offset from UTC of 8 hours and it currently observes daylight savings time between a date in March and a date in November. Certificate A is generated with a <code>validUntil</code> value of <code>2035-07-12T12:00:00-07:00</code>, reflecting the observation of DST during the month of July.</p>
+	
+	<p>After Certificate A was generated (but before it expires), imagine that the time zone <code>America/Los_Angeles</code> decides to stop observing daylight savings time. Then imagine a user wishes to generate Certificate B to replace Certificate A when it expires. If the new certificate is valid "from noon on 12 July", it might be serialized as <code>2035-07-12T12:00:00-08:00</code>, because the time zone's offset will not be in DST any longer. Notice that this is one hour later than the actual expiration of Certificate A.</p>
+	</aside>
+	
+<section>
+	<h3>Past-only Events</h3>
+	
+	<p class=advisement>You SHOULD use <code>ZonedInstant</code> type for past-only events.</p>
 	<p class=advisement>You MAY use <code>ZonedInstant</code>, <code>ZonedLocalDateTime</code> or <code>ZonedOffsetDateTime</code> types for past events.</p>
 	
 	<p>For applications that deal only with events that occurred in the past (with no future events) and for which you need to know what the wall time was, the time zone of the event may be necessary additional data. Once an event is in the past, its relationship to incremental time becomes fixed and the rules for generating wall time remain static essentially forever. You might still need to know that an event occurred at <code>10:00</code> rather than at <code>14:00</code> local time. At a minimum, the <a>local time offset</a> is necessary, although knowing the complete time zone is necessary for some applications. Knowing the specific time zone allows one to reconstruct the time and its relationship to other wall times.</p>
@@ -467,13 +481,9 @@
 <section>
 	<h3>Past and Future Events</h3>
 	
-	<p class=advisement>You SHOULD use <code>ZonedInstant</code> type for past and future events.</p>
+	<p class=advisement>You SHOULD use <code>ZonedInstant</code> type if your application can have events in the future.</p>
 	
 	<p>If your application deals with both past and future events (for example, if you have a calendar or a meeting schedule), you’ll need additional time zone information to ensure proper time computation. At a minimum you will need the time zone, not merely an offset from UTC. This is because a future event's wall time depends on time zone related information, such as DST transitions. One issue with future events is that time zone rules can change from time to time and these may require an application to update affected data records in order to meet user’s expectations. This is because many systems actually store the time portion of the value as an incremental time and the incremental time needs to be changed if the wall time offset from UTC has been altered.</p>
-</section>
-
-<section>
-	<h3>Floating Time Values</h3>
 </section>
 
 <section>
@@ -481,9 +491,20 @@
 	
 	<p>A recurring event, such as a regular meeting, is usually defined by a set of rules that express a user's intent. In some cases, the user intends for the event to recur at a specific local time (and thus, wants to tie it to local time changes, such as DST transitions). In other cases, the user wants the time tied to another time zone, to a specific UTC offset, or to other events. So, for example, a recurring weekly event might need to add 167, 168, or 169 hours to "last week's occurrence" of an event to compute this week's start time, depending on whether a DST transition has occurred and which direction the transition was in.</p>
 </section>
+</section>
+
+<section>
+	<h3>Floating Time Values</h3>
+	
+	<p class="advisement">You SHOULD use the appropriate floating time type, such as <code>LocalDateTime</code> (for values with both date and time), <code>LocalDate</code> (for date values), or <code>LocalTime</code> (for time-only values) for values that are not tied to a specific offset or time zone rules.</p>
+	
+	<p>If your application deals with a date or time value that is not tied to a specific local interpretation or which needs to be interpreted as a different range of incremental time values in different locations, serializing the value without an offset or time zone identifer communicates that the value is a <a>floating time</a>.</p>
+</section>
 
 <section>
 	<h3>Floating and Unfloating Time</h3>
+	
+	<p>Sometimes a <a>producer</a> will emit a <a>floating time</a> value when the <a>consumer</a> expects or requires an <a>incremental time</a> value. In other cases, a <a>consumer</a> might need to convert a local or otherwise incremental time value into a floating date or time.</p>
 </section>
 </section>
 
