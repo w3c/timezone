@@ -158,30 +158,14 @@
 	</aside>
 </noscript>
 
-<p>When working with date and time values, the time zone, the <a>locale</a>, and your choices for encoding, handling, and processing date and time values can produce different and perhaps unexpected or unwanted results.</p>
+<p>When working with date and time values, the time zone, the <a>locale</a>, and your choices for encoding, handling, and processing date and time values can produce different and perhaps unexpected or unwanted results. Some examples of errors due to improper date/time handling might include the items listed below. Reading the best practices and guidelines in this document can help you create specifications, designs, or implementations that avoid errors when working with time values.</p>
 
-<aside class="example" id="six-friends" title="Six Friends">
-
-<p>Six people attend college together and become friends. After college, they go their separate ways, vowing to remain in contact. Alice lives in New York, USA. Martina lives in Buenos Aires, Argentina. Lucas lives in Santiago, Chile. Minato lives in Tokyo, Japan. Miriam lives in Dubai, UAE. And Senthil lives in Bengaluru, India.</p>
-
-<p>Alice organizes a monthly call with her friends, starting in July. New York City and Santiago have the same offset during this part of the year. In September, Santiago, Chile, switches to Summer Time and Lucas almost misses the call because the reminder was an hour late. Alice makes a mental note that adjust her own schedule when the US switches to standard time later in the month, but the friends are shocked when their call cuts off in the middle. What went wrong?</p>
-
-<p>At the next call, Alice announces that she’s written an article that appeared in the Sunday edition of a local newspaper. Martina and Lucas both buy a digital copy of the Sunday edition, but are confused to find that the edition they are reading is for Monday and doesn't include Alice's article. What went wrong?</p>
-
-<p>In her article, Alice mentions a new product her employer is releasing. The new product ships on X, and all six friends order it. Two of the friends&mdash;Minato, who lives in Tokyo, Japan, and Miriam, who lives in X&mdash;don’t receive their orders, even after the other friends have received theirs. Checking the shipment tracker, they see:</p>
-
-<p>What went wrong? In each case, software failed to account for date and time values or the effect of time zones correctly. Understanding how to handle date and time values is the subject of this document.</p>
-
-</aside>
-
-
-<h5 id="scenario_2">Scenario #2: Tracking delivery</h5>
-
-<p>Minato, a customer in Tokyo, and Miriam, a customer in Jerusalem, are both excited about a new product that will be released on <code>Thursday, July 14, 2022</code>. They have placed pre-orders for the product and receive automated notifications that allows them to track their order once it has shipped from the United States.</p>
-
-<p>Minato's product ships from New York to Los Angeles and then from Los Angeles to Tokyo. It is then placed on a truck and delivered to his house. Miriam's product ships from New York to London, then on to Jerusalem before being placed on a truck and delivered to her house. Here's what each of them see:</p>
-
-
+<ul>
+	<li>Two people schedule a recurring phone call using a phone application. They set it up to start on a particular day of the week at a particular time. Sometimes the reminder comes too early to either one of the people. Sometimes it comes too late. Sometimes the phone application won't let the users in because the call is "already over".</li>
+    <li>A customer is eligible for a discount on their birthday, but when they log in on their birthday, they can't access the discount.</li>
+    <li>An application trackers customer loyalty, but shows gaps when the user travels, even though the customer logged in every day.</li>
+    <li>A business-critical regularly scheduled process fails to run, but only on certain days of the year.</li>
+</ul>
 
 <p>Your browser's system time is: <code id=currTimeDisplay></code> (<code id=currTime></code>) and your browser's time zone is: <code id=currZone></code>. If a friend in a different time zone views this page at the same instant you do, they might see a very different time&mdash;perhaps even on a different day:</p>
 <div id=zoneOut>
@@ -195,8 +179,6 @@
 	</tbody>
 </table>
 </div>
-
-
 
 </section>
 </section>
@@ -342,24 +324,37 @@
 	</tbody>
 </table>
 
-<p>Other examples of floating values include your birthdate, company holidays, and hours of operation (as a policy, say, rather than for a specific site). Many of the time values displayed to users work best as floating date and time values—common examples include delivery times, release dates, or publication dates.</p>
+<p>Other examples of floating time values include your birthdate, company holidays, and hours of operation (as a policy, say, rather than for a specific site). Many of the time values displayed to users work best as floating date and time values—common examples include delivery times, release dates, or publication dates.</p>
 </section>
 
 <section>
 <h3 id="definitions">Definitions</h3>
 
  <p class=issue>I've adopted mostly Java/Joda's terminology here (chronology) vs. using other terms (such as 'calendar').</p>
- <p class=definition><dfn id="chronology">Chronology</dfn> or <dfn id="calendar">calendar</dfn> A timekeeping system used to organize dates and times.</p>
+ 
+ <p class=definition><dfn class="lint-ignore export">Chronology</dfn> or <dfn id="calendar">calendar</dfn> A timekeeping system used to organize dates and times.</p>
+ 
  <p>Many different chronologies and calendars have been used or are in use today around the world. These different systems have varying rules for organizing and dividing time values.</p>
- <p class=definition><dfn id="iso_chronology">ISO Chronology</dfn> is based on the [[ISO8601]] standard, which is the <em>de facto</em> world calendar. This system is based on the Gregorian calendar.</p>
- <p class=definition><dfn id="observed_time">Observed Time</dfn> A moment in time based on an observed event or events. For example, "local noon", the shortest day or the year, or the first new moon.</p>
- <p class=definition><dfn id="wall time">Wall Time</dfn> (Informal) A date or time value as experienced by human beings, so called because the value might be what is shown on a paper calendar or analog clock mounted on the wall in a given location at a given moment.</p>
- <p class=definition><dfn id="epoch">Epoch</dfn> A specific moment in time that serves as a reference point for a given <a>chronology</a>. The most common epoch is the Unix Epoch, which is used by the most common computer timekeeping systems and measures incremental time values from midnight, January 1, 1970 in the UTC time zone, i.e. from <code>1970-01-01T00:00:00.000Z</code></p>
- <p class=definition><dfn id="timeline">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
- <p class=definition><dfn id="incremental_time">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (<a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
- <p class=definition><dfn id="floating_time">Floating Time</dfn> A date or time value that is not fixed to a specific incremental time value or time zone. When you apply time zone information to floating times they produce a range of acceptable incremental time values, because they represent a nominal time which is described in the same way in all time zones around the world.</p>
-  <p class=definition><dfn id="utc" data-lt="universal coordinated time|UTC">Universal Coordinated Time</dfn> or <strong>UTC</strong> is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
- <p class=definition><dfn id="local_time_offset">Local Time Offset</dfn> The different (positive or negative) of a given location from <a>UTC</a>. This is usually expressed as an offset in hours and minutes, such as <code>+10:00</code> or <code>-09:30</code>.</p>
+ 
+ <p class=definition><dfn class="lint-ignore export">ISO Chronology</dfn> is based on the [[ISO8601]] standard, which is the <em>de facto</em> world calendar. This system is based on the Gregorian calendar.</p>
+ 
+ <p class=definition><dfn class="link-ignore export">Observed Time</dfn> A moment in time based on an observed event or events. For example, "local noon", the shortest day or the year, or the first new moon.</p>
+ 
+ <p class=definition><dfn class="link-ignore export">Wall Time</dfn> (Informal) A date or time value as experienced by human beings, so called because the value might be what is shown on a paper calendar or analog clock mounted on the wall in a given location at a given moment.</p>
+ 
+ <p class=definition><dfn class="link-ignore export">Epoch</dfn> A specific moment in time that serves as a reference point for a given <a>chronology</a>. The most common epoch is the Unix Epoch, which is used by the most common computer timekeeping systems and measures incremental time values from midnight, January 1, 1970 in the UTC time zone, i.e. from <code>1970-01-01T00:00:00.000Z</code></p>
+ 
+ <p class=definition><dfn class="link-ignore export">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
+ 
+ <p class=definition><dfn class="link-ignore export">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (<a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
+ 
+ <p class=definition><dfn data-lt="floating time|plain time|local time" class="link-ignore export">Floating Time</dfn> A date or time value that is not fixed to a specific incremental time value or time zone. When you apply time zone information to floating times they produce a range of acceptable incremental time values, because they represent a nominal time which is described in the same way in all time zones around the world.</p>
+ 
+ <aside class="note">Java and HTML call a floating time value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls it a "plain" time.</aside>
+ 
+  <p class=definition><dfn data-lt="universal coordinated time|UTC">Universal Coordinated Time</dfn> or <strong>UTC</strong> is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
+  
+ <p class=definition><dfn class="link-ignore export">Local Time Offset</dfn> The different (positive or negative) of a given location from <a>UTC</a>. This is usually expressed as an offset in hours and minutes, such as <code>+10:00</code> or <code>-09:30</code>.</p>
 </section>
 
 
@@ -505,13 +500,13 @@
 <section>
 	<h3>Floating and Unfloating Time</h3>
 	
-	<p>Sometimes a <a>producer</a> will emit a <a>floating time</a> value when the <a>consumer</a> expects or requires an <a>incremental time</a> value. In other cases, a <a>consumer</a> might need to convert a local or otherwise incremental time value into a floating date or time.</p>
+	<p>Sometimes a <a>producer</a> will emit a <a>floating time</a> value when the <a data-cite="i18n-glossary#consumer">consumer</a> expects or requires an <a>incremental time</a> value. In other cases, a <a data-cite="i18n-glossary#consumer">consumer</a> might need to convert a local or otherwise incremental time value into a floating date or time.</p>
 	
-	<p class="definition"><dfn data-lt="lint-ignore export">Floating a time value</dfn> means to remove the value from the timeline by deleting any associated time zone and zone offset information from the value.</p>
+	<p class="definition"><dfn class="link-ignore export">Floating a time value</dfn> means to remove the value from the timeline by deleting any associated time zone and zone offset information from the value.</p>
 	
 	<p>One common reason to float a value is if the data type used to collect or process the value is an incremental type but the value isn't. For example, if you received a user's birth date as a `Date` object. Removing the time zone or offset makes it easier to format the value later without the field values changing in correctly.</p>
 	
-	<p class="definition"><dfn  data-lt="lint-ignore export">Unfloating a time value</dfn> means to attach a floating time value to the timeline by adding a time zone or zone offset to the value.</p>
+	<p class="definition"><dfn  class="link-ignore export">Unfloating a time value</dfn> means to attach a floating time value to the timeline by adding a time zone or zone offset to the value.</p>
 	
 	<p>One common reason to unfloat a value is that the serialized value might not contain an offset but the value needs to be compared to other incremental values or displayed to the user in local time.</p>
 	
