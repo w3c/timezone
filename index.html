@@ -163,8 +163,8 @@
 <ul>
 	<li>Two people schedule a recurring phone call using a phone application. They set it up to start on a particular day of the week at a particular time. Sometimes the reminder comes too early to either one of the people. Sometimes it comes too late. Sometimes the phone application won't let the users in because the call is "already over".</li>
     <li>A customer is eligible for a discount on their birthday, but when they log in on their birthday, they can't access the discount.</li>
-    <li>An application trackers customer loyalty, but shows gaps when the user travels, even though the customer logged in every day.</li>
-    <li>A business-critical regularly scheduled process fails to run, but only on certain days of the year.</li>
+    <li>An website tracks customer loyalty by keeping track of the number of days that customer visited the site. The site shows gaps when the user travels, even though the customer logged in every day.</li>
+    <li>A business-critical regularly-scheduled process fails to run, but only on certain days of the year.</li>
 </ul>
 
 <p>Your browser's system time is: <code id=currTimeDisplay></code> (<code id=currTime></code>) and your browser's time zone is: <code id=currZone></code>. If a friend in a different time zone views this page at the same instant you do, they might see a very different time&mdash;perhaps even on a different day:</p>
@@ -193,52 +193,59 @@
 
 <p>Computer systems tell time differently than people do. So it is helpful to understand how time works within computers as well as in the real world in order to get a handle on how to get the results that you want. This description is necessarily simplified.</p>
 
-<p>Timekeeping has its roots in observable celestial events, such as sunrise, sunset, the longest/shortest day of the year, the phases of the moon, or the position of the constellations. This is called <a>observed time</a> and underpin the various customary systems for measuring time. For convenience, days are broken up into arbitrary units such as hours, minutes, and seconds or grouped to form weeks. Years are numbered from significant events or organized into eras. Each unique cultural system for organizing time forms a <a>calendar</a> or <a>chronology</a>.</p>
+<p>Timekeeping has its roots in observable celestial events, such as sunrise, sunset, the longest/shortest day of the year, the phases of the moon, or the position of the constellations. This is called <a>observed time</a> and underpins the various customary systems for measuring time.</p>
+
+<p>Conventions have been established by various cultures to organize time into more convenient units. For example, days are broken up into arbitrary units such as hours, minutes, and seconds or grouped together to form weeks. Years are broken up into months. They are also numbered starting from significant events or organized into <a>eras</a>. Each unique cultural system for organizing time forms a <a>calendar</a> or <a>chronology</a>.</p>
 
 <p>Gradually, over time, most chronologies have weakened or sometimes removed some of the ties to the original observational basis for events. For example, the Gregorian calendar's months do not correspond to the lunar cycle. Other calendars retain stronger linkages to specific celestial events. For example, most Islamic calendars use actual solar or lunar observations to determine the start of specific periods or months.</p>
 
 <p>Mechanical timekeeping allows for more precision and standardization in counting or measuring events. We refer to the dates and times experienced in a given location as <a>wall time</a> because the date or time can be read from a printed calendar or a clock mounted on the wall.</p>
 
-<p>The advent of speed-of-light communication (such as the telegraph) and efficient means of travel (such as railroads) meant that timekeeping based on local observations (such as "local noon") became inconvenient: it is difficult to manage schedules when each locality keeps its own clock! Even relatively small travel distances produce measurable differences in observed time. As a result, synchronization of different regions that observe the same calendar and wall time became necessary, resulting in the advent of time zones.</p>
+<p>The advent of speed-of-light communication (such as the telegraph) and efficient means of travel (such as railroads) meant that timekeeping based on local observations (such as "local noon") became inconvenient: it is difficult to manage schedules when each locality keeps its own clock! Even relatively small travel distances produce measurable differences in observed time. As a result, synchronization of different regions that observe the same calendar and <a>wall time</a> became necessary, resulting in the advent of time zones.</p>
 
-<p>Observed time has many disadvantages computationally. Observed events are not always predictable or convenient to use. The advent of mechanical timekeeping has allowed a different kind of time to flourish: <a>incremental time</a> based on a monotonic progression of fixed units. In some cases, incremental time is merely a prediction of when an event might be observed.</p>
+<p><a>Observed time</a> has many disadvantages computationally. Observed events are not always predictable or convenient to use. The advent of mechanical timekeeping has allowed a different kind of time to flourish: <a>incremental time</a> based on a monotonic progression of fixed units. In some cases, incremental time is merely a prediction of when an event might be observed.</p>
 
 <p>The modern standardized system of timekeeping in computer systems is generally based on a few core standards. <a>Universal Coordinated Time</a> (or "UTC"), adopted in 1972 CE, is used for global synchronization of clocks and to define local time zone variations. Many systems set computer clocks using the UNIX epoch (counting time from January 1, 1970 in UTC). Standards such as [[ISO8601]] or [[RFC3339]] provide serialization schemes for the interchange of date and time values and most programming languagues or data formats provide data structures for storing or exchanging date and time values. These types of systems are usually based on the <a>ISO Chronology</a> (also known as the <em>Gregorian calendar</em>), although they can be converted to other systems, such as the one of the Islamic calendars, the Ethiopic or Chinese solar-lunar calendars, and so forth.</p>
 
 
 
-<section>
+<section id="what-is-time-zone">
 <h3>What is a Time Zone?</h3>
 
 <p>A time zone is a set of rules for determining the local observed time (<a>wall time</a>) as it relates to <a>incremental time</a> (as used in most computing systems) for a particular geographical region.</p>
 
-<p>Before the adoption of time zones, local time was derived directly from observation. Clocks might be set, for example, based on an observed event such as local noon. Traveling fairly short distances across the Earth's surface results in changes in local observed time: you only have to travel about 28 kilometers (17 miles) at the equator (and less distance the further north or south you travel) to alter the observed local noon by one minute.</p>
+<p>Before the adoption of time zones, local time was derived directly from observation. Clocks might be set, for example, based on an observed event such as local noon. Traveling fairly short distances across the Earth's surface results in changes in local observed time: you only have to travel about 28 kilometers (17 miles) at the equator (and less distance the further north or south of the equator you are) to alter the observed local noon by one minute.</p>
 
-<p>Time zones were originated in several countries by railroad operators. Maintaining a schedule for large geographic areas allowed people in the various locations served by the railroad know when the train would arrive (and depart). Coordinating trains could be scheduled between stations (using a single line in alternating directions, for example), avoiding observational error, local customs, and other issues combined with a plethora of "local times" to make accurate train scheduling of this sort difficult.</p>
+<p>Time zones were originated in several countries by railroad operators. Before time zones were instituted, it was difficult know when trains would arrive or depart because local wall time might vary significantly from one station to another. This also made it difficult to schedule traffic across the rail network.</p>
 
 <p>Railroads solved this problem by adopting fixed regions in which the same local time was used throughout. These "time zones" were intended to be about one observed hour wide: the local time in the middle of the time zone was used throughout the region so that the most observational deviation most people would see was about half an hour (and, assuming the population is evenly distributed, most people experienced a smaller deviation). This is a value small enough that most people won't notice the difference between actual and observed time.</p>
 
-<section>
-<h4>Daylight Savings/Summer Time</h4>
+<p>In the modern era, most countries have a single time zone, but a number of larger or more geographically distributed countries have more than one.</p>
 
-<p>More recently, the concept of "Daylight Saving Time" (DST) or "Summer Time" was adopted as a way of allowing people more sunlight hours in the evening. Whether and how summer time is observed varies by jurisdiction. Usually it is the same for a whole country, but a number of larger or more geographically distributed countries have more than one.</p>
+<section id="summer-time">
+<h4>Daylight Savings or Summer Time</h4>
 
-<p>Not all regions observe summer time: usually those nearer the equator do not need it.</p>
+<p>The concept of "Daylight Saving Time" (DST) or "Summer Time" is used as a way of allowing people more sunlight hours in the evening. Not all regions observe summer time: usually those nearer the equator do not need it. Whether summer time is observed and how it is observed varies by jurisdiction.</p>
 
-<p>Observation (or non-observation) of summer time is controlled by national, regional, and sometimes local governments, which introduces a certain level of variability. For example, sometimes local authorities will make one-time changes to accommodate a special event (such as when hosting the Olympics). Governments sometimes change whether summer time is observed as well as changing when summer time begins or ends.</p>
+<p>As the name implies, areas that use some form of "summer time" do so in the summer season. That is, they change their UTC offset forward (usually by one hour) sometime in the spring and the reverse when the observation of summer time ends in the autumn. Since "spring" and "autumn" happen in opposite parts of the year in the northern and southern hemispheres, the starting and ending days are different for time zones in opposite hemispheres.</p>
 
-<p>Most areas that use summer time do so in the summer time. That is, they change their UTC offset forward (usually by one hour) when summer time starts in the spring and the reverse when summer time ends in the autumn. Since "spring" and "autumn" happen in opposite parts of the year in the northern and southern hemispheres, the starting and ending days are very different for zones in opposite hemispheres. But note that even regions that share a UTC offset and are similar in latitude (or even share borders) may have differing summer time start or stop rules.</p>
+<p>Observation (or non-observation) of summer time is controlled by national, regional, and sometimes local governments. Regions that otherwise share a UTC offset, even those with similar latitude (or shared borders) can have differing summer time start or stop rules. Sometimes local authorities will make one-time changes to accommodate a special event (such as when hosting the Olympics). Governments sometimes change whether summer time is observed as well as changing when summer time begins or ends.</p>
+
 </section>
 
-<section>
-<h4>Definition of Time Zones</h4>
+<section id="tz-definition">
+<h4>Definition and Mutability of Time Zones</h4>
 
-<p>While other schemes exist, many applications use the IANA Time Zone Database and its associated set of identifiers to define time zones.</p>
+<p>While other schemes exist, many applications use the <a href="https://www.iana.org/time-zones">IANA Time Zone Database</a> [[RFC6557]] and its associated set of identifiers to define time zones.</p>
+
+<p>Time zones, their rules, offsets, and observation (or non-observation) of summer time are controlled by a variety of international agreements, as well as national, regional, sub-national, and local governments. This can mean that neighboring areas that might otherwise share a UTC offset, even those with similar latitude (or shared borders) can have differing rules, such as those governing daylight-savings. Sometimes local authorities will change the boundaries of a zone or the offset used by a given region. Or they can make one-time changes to accommodate a special event (such as when hosting the Olympics). The time zone database tracks past changes so that applications can accurately compute <a>wall time</a> for past and future events.</p>
+
+<p>Because there are many governing bodies acting independently, the time zone database is not stabilized. New rule changes or updates to historical records are introduced into the database as they are made known (such as due to legislative action). There is no specific release cycle: updates can happen at any time. When changes affect future events, computing systems have to be updated lest their clocks show the wrong local time for a given region.</p>
 
 <p>Time zones are defined by these considerations:</p>
 
     <ul>
-       <li><strong><a>Local Time Offset</a></strong> All time zones have, as their basis, an offset from <a>UTC</a>. The local time offset is the difference (positive or negative) between when a given time event is observed in UTC and in local time. If all time zones used one-hour offsets, there would be 25 world-wide time zones, ranging between 12 hours before UTC to 12 hours following UTC. However, there are some that use half-hour or even quarter-hour offsets (or even some odd offsets). In addition, some time zones fall outside a single-day span.</li>
+       <li><strong><a>Local Time Offset</a></strong> All time zones have, as their basis, an offset from <a>UTC</a>. The local time offset is the difference (positive or negative) between when a given time event is observed in UTC and in local time. If all time zones used one-hour offsets, there would be 24 world-wide time zones, ranging between 12 hours before UTC to 11 hours following UTC. However, there are some that use half-hour or even quarter-hour offsets (or even some odd offsets). In addition, some time zones fall outside a single-day span.</li>
        <li><strong>Observation of summer time</strong> Some times zones include rules for observing summer time, while others do not. The observation of summer time is defined by a set of rules that include:
         <ul>
            <li><strong>Summer time offset</strong> The amount of time added to (or subtracted from) the <a>local time offset</a> when summer time is being observed. Nowadays this is always one hour, but other values are theoretically possible (and have been used historically).</li>
@@ -251,7 +258,7 @@
         <li><strong>Adoption Dates</strong> Regions that currently have a specific local time offset and summer time behavior may have had different rules in the past. Correct handling of past time values requires treating such regions as separate time zones.</li>
     </ul>
     <aside class="example">
-        <p>Adoption dates can be applied to any of the values that define a time zone, such as the amount of summer time offset and the starting/ending dates or times for summer time. For example, prior to 2007, the United States started DST at 2 a.m. on the first Sunday in April for each time zone observing DST. In 2007, the USA changed the start date and time to 2 a.m. on the second Sunday in March.</p>
+        <p>Adoption dates can be applied to any of the values that define a time zone, such as the amount of summer time offset and the starting/ending dates or times for summer time. For example, prior to 2007, the United States started daylight-savings time at 2 a.m. on the first Sunday in April for each time zone observing daylight-savings. In 2007, the USA changed the start date and time to 2 a.m. on the second Sunday in March.</p>
     </aside>
     <aside class="example">
 		<p>Korea Standard Time and Japan Standard Time currently use the same UTC offset and neither uses summer time. However, Japan abandoned summer time in 1951, while South Korea used it last in 1988, so an application that tracks time values that reach back that far might need to track these time zones separately.</p>
@@ -260,30 +267,35 @@
 </section>
 </section>
 
-<section>
+<section id="incremental-times">
 <h3>Incremental Time</h3>
 
 <p><a>Incremental time</a> measures time using fixed integer units that increase monotonically from a specific point in time (called the "epoch"). Most programming languages and operating environments provide or use incremental time for working with time values. Incremental time is not usually seen directly by users, but is formatted into <a>wall time</a> for human consumption.</p>
 
 <p>Date and time values based on incremental time are time-zone-independent, since at any given moment it is the same time in UTC everywhere: the values can be transformed for display for any particular time zone or offset, but the value itself is not tied to a specific location.</p>
 
-<p>Not all incremental time representations are tied to an epoch. A monotonic clock system might just be tied to the last time the clock was restarted or some other event.</p>
+<p>Not all incremental time representations are tied to an <a>epoch</a>. A monotonic clock system might just be tied to the last time the hardware clock was restarted or some other event.</p>
 
 <p>Since incremental time values are just integers, any two time values can be put into order as a sequence of events just by comparing the values. That is, any set of incremental time values attached to a specific <a>chronology</a> form a <a>timeline</a>.</p>
 </section>
 
-<section>
+<section id="floating-times">
 <h3>Floating Time</h3>
 
-<p>A <a>floating time</a> is a date or time value that isn’t tied to a specific instant in time and whose interpretation doesn't depend on time zone.</p>
+<p>A <a>floating time</a> is a date or time value in a <a>calendar</a> that is not a specific <a>instant</a> in time, that is, it is not an <a>instant</a> in a <a>chronology</a> on a <a>timeline</a>. Floating time values are also independent of a specific time zone.</p>
 
-<p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
+<p>Applications and data formats need <a>floating time</a> values when <a>wall time</a> is more important to the value than putting the event into a <a>chronology</a>. This makes them useful for when an event can apply to many different time values or are independent of location. Examples of floating date values include your birthdate, holidays, or anniversary dates. Floating time values can include things such as hours of operation (as a policy, rather than for a specific location).</p>
 
-<p>France has a number of overseas departments which do not share a time zone with Metropolitan France. In this example, we'll look at three French time zones: <code>Europe/Paris</code>, <code>Pacific/Noumea</code> (the time zone used in New Caledonia), and <code>Pacific/Tahiti</code> (one of the timezones in French Polynesia).</p>
+<aside class="note"><a>Floating times</a> have different names in different places. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
 
-<p>New Caledonia is one of (but not the) first time zones in France to observe the holiday. Tahiti is one of (but not the) last in France to observe it. The table below shows the dates and times in each of the time zones as Bastille Day is observed around the world. Notice that some time incremental time values that would be "Bastille Day" in one time zone are either before or after "Bastille Day" in others:</p>
+<aside class="example">
+   <p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
 
-<table>
+   <p>France has a number of overseas departments which do not share a time zone with Metropolitan France. In this example, we'll look at three French time zones: <code>Europe/Paris</code>, <code>Pacific/Noumea</code> (the time zone used in New Caledonia), and <code>Pacific/Tahiti</code> (one of the timezones in French Polynesia).</p>
+
+   <p>New Caledonia is one of (but not the) first time zones in France to observe the holiday. Tahiti is one of (but not the) last in France to observe it. The table below shows the dates and times in each of the time zones as Bastille Day is observed around the world. Notice that some time incremental time values that would be "Bastille Day" in one time zone are either before or after "Bastille Day" in others:</p>
+
+   <table>
 	<thead>
 		<tr>
 		<th></th>
@@ -320,11 +332,10 @@
 			<td><strong>2022-07-14<br>midnight</strong></td>
 			<td><strong>2022-07-15<br>midnight</strong></td>
 		</tr>
-		
 	</tbody>
-</table>
+   </table>
+</aside>
 
-<p>Other examples of floating time values include your birthdate, company holidays, and hours of operation (as a policy, say, rather than for a specific site). Many of the time values displayed to users work best as floating date and time values—common examples include delivery times, release dates, or publication dates.</p>
 </section>
 
 <section>
@@ -344,23 +355,21 @@
  
  <p class=definition><dfn class="link-ignore export">Epoch</dfn> A specific moment in time that serves as a reference point for a given <a>chronology</a>. The most common epoch is the Unix Epoch, which is used by the most common computer timekeeping systems and measures incremental time values from midnight, January 1, 1970 in the UTC time zone, i.e. from <code>1970-01-01T00:00:00.000Z</code></p>
  
- <p class=definition><dfn class="link-ignore export">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
+ <p class=definition><dfn class="lint-ignore export">Era</dfn> A grouping within a <a>calendar</a> used to number years. Most eras start with year "1" and count up to the start of the next era. There are some exceptions to this: the Gregorian calendar's era "BCE" counts backwards, with 1 BCE being the year just before 1 CE (1 AD).</p>
+ 
+ <p class=definition><dfn class="lint-ignore export">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
  
  <p class=definition><dfn class="link-ignore export">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (<a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
  
  <p class=definition><dfn data-lt="floating time|plain time|local time" class="link-ignore export">Floating Time</dfn> A date or time value that is not fixed to a specific incremental time value or time zone. When you apply time zone information to floating times they produce a range of acceptable incremental time values, because they represent a nominal time which is described in the same way in all time zones around the world.</p>
  
- <aside class="note">Java and HTML call a floating time value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls it a "plain" time.</aside>
+ <p class=definition><dfn class="lint-ignore export">Instant</dfn> An <a>incremental time</a> in the Unix <a>epoch</a>. An instant can be converted for display in any <a>calendar</a> and/or time zone and any two instants can be ordered in time.</p>
  
-  <p class=definition><dfn data-lt="universal coordinated time|UTC">Universal Coordinated Time</dfn> or <strong>UTC</strong> is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
+ <p class=definition><dfn data-lt="universal coordinated time|UTC">Universal Coordinated Time</dfn> or <strong>UTC</strong> is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
   
  <p class=definition><dfn class="link-ignore export">Local Time Offset</dfn> The different (positive or negative) of a given location from <a>UTC</a>. This is usually expressed as an offset in hours and minutes, such as <code>+10:00</code> or <code>-09:30</code>.</p>
 </section>
 
-
-<section>
-<h3>Time Zones</h3>
-</section>
 </section>
 
 <section>
@@ -520,7 +529,8 @@
 <section>
 	<h3>Time Zone Identifiers</h3>
 	
-	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[BCP175]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
+	<!-- ed note: RFC6557 is BCP175 -->
+	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[RFC6557]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
 
     <p>In the TZ database, time zones are given IDs that usually consist of a region and exemplar city. Regions can be continents (such as Europe or America) or oceans (such as Atlantic or Pacific). An exemplar city is a city in the time zone in question that should be well-known to people using the time zone. The TZ database also supplies aliases for many IDs; for example, <kbd>Asia/Ulan Bator</kbd> is equivalent to <kbd>Asia/Ulaanbaatar</kbd>. The Common Locale Data Repository [[CLDR]] can be used to provide a localized form for the IDs: see Appendix J in [[UAX35]]. Note: some systems, such as Apple Inc.'s MacOS, provide additional exemplar cities.</p>
     
