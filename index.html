@@ -286,6 +286,8 @@
 
 <p>Applications and data formats need <a>floating time</a> values when <a>wall time</a> is more important to the value than putting the event into a <a>chronology</a>. This makes them useful for when an event can apply to many different time values or are independent of location. Examples of floating date values include your birthdate, holidays, or anniversary dates. Floating time values can include things such as hours of operation (as a policy, rather than for a specific location).</p>
 
+<aside class="note"><a>Floating times</a> have different names in different places. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
+
 <aside class="example">
    <p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
 
@@ -363,9 +365,7 @@
  
  <p class=definition><dfn class="lint-ignore export">Instant</dfn> An <a>incremental time</a> in the Unix <a>epoch</a>. An instant can be converted for display in any <a>calendar</a> and/or time zone and any two instants can be ordered in time.</p>
  
- <aside class="note">Java and HTML call a floating time value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls it a "plain" time.</aside>
- 
-  <p class=definition><dfn data-lt="universal coordinated time|UTC">Universal Coordinated Time</dfn> or <strong>UTC</strong> is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
+ <p class=definition><dfn data-lt="universal coordinated time|UTC">Universal Coordinated Time</dfn> or <strong>UTC</strong> is the basis for modern timekeeping. Among other things, it provides a common baseline for converting between incremental and wall time. UTC is also known as GMT (Greenwich Mean Time). There are some subtle differences between the two, but none that the average person would notice. The time zone offset for UTC is <code>0</code>. UTC is often indicated in field-based formats using <code>Z</code>.</p>
   
  <p class=definition><dfn class="link-ignore export">Local Time Offset</dfn> The different (positive or negative) of a given location from <a>UTC</a>. This is usually expressed as an offset in hours and minutes, such as <code>+10:00</code> or <code>-09:30</code>.</p>
 </section>
