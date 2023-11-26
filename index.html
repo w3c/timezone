@@ -236,7 +236,7 @@
 <section id="tz-definition">
 <h4>Definition and Mutability of Time Zones</h4>
 
-<p>While other schemes exist, many applications use the <a href="https://www.iana.org/time-zones">IANA Time Zone Database</a> [[RFC6557]] and its associated set of identifiers to define time zones.</p>
+<p>While other schemes exist, many applications use the <a href="https://www.iana.org/time-zones">IANA Time Zone Database</a> [[BCP175]] and its associated set of identifiers to define time zones.</p>
 
 <p>Time zones, their rules, offsets, and observation (or non-observation) of summer time are controlled by a variety of international agreements, as well as national, regional, sub-national, and local governments. This can mean that neighboring areas that might otherwise share a UTC offset, even those with similar latitude (or shared borders) can have differing rules, such as those governing daylight-savings. Sometimes local authorities will change the boundaries of a zone or the offset used by a given region. Or they can make one-time changes to accommodate a special event (such as when hosting the Olympics). The time zone database tracks past changes so that applications can accurately compute <a>wall time</a> for past and future events.</p>
 
@@ -347,11 +347,15 @@
  
  <p>Many different chronologies and calendars have been used or are in use today around the world. These different systems have varying rules for organizing and dividing time values.</p>
  
- <p class=definition><dfn class="lint-ignore export">ISO Chronology</dfn> is based on the [[ISO8601]] standard, which is the <em>de facto</em> world calendar. This system is based on the Gregorian calendar.</p>
+ <p class=definition><dfn class="lint-ignore export">ISO Chronology</dfn> is based on the [[ISO8601]] standard, which is the <em>de facto</em> world calendar. This system uses a <a>proleptic</a> Gregorian calendar.</p>
+ 
+ <p class=definition>A <dfn data-lt="proleptic">proleptic calendar</dfn> is a calendar that applies modern rules to all times in the past, as if the calendar were observed at that time.</p>
+
+ <p>For example, the Gregorian calendar was created in 1582 CE, but not adopted universally, even by countries observing the Julian calendar. A proleptic Gregorian calendar (and thus, by extension, the <a>ISO Chronology</a>) applies year numbers, leap years, and dating for dates in the past, even when that would be inappropriate historically.</p>
  
  <p class=definition><dfn class="link-ignore export">Observed Time</dfn> A moment in time based on an observed event or events. For example, "local noon", the shortest day or the year, or the first new moon.</p>
  
- <p class=definition><dfn class="link-ignore export">Wall Time</dfn> (Informal) A date or time value as experienced by human beings, so called because the value might be what is shown on a paper calendar or analog clock mounted on the wall in a given location at a given moment.</p>
+ <p class=definition><dfn class="link-ignore export">Wall Time</dfn> A date or time value as experienced by human beings, so called because the value might be what is shown on a paper calendar or analog clock mounted on the wall in a given location at a given moment.</p>
  
  <p class=definition><dfn class="link-ignore export">Epoch</dfn> A specific moment in time that serves as a reference point for a given <a>chronology</a>. The most common epoch is the Unix Epoch, which is used by the most common computer timekeeping systems and measures incremental time values from midnight, January 1, 1970 in the UTC time zone, i.e. from <code>1970-01-01T00:00:00.000Z</code></p>
  
@@ -359,9 +363,9 @@
  
  <p class=definition><dfn class="lint-ignore export">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
  
- <p class=definition><dfn class="link-ignore export">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (<a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
+ <p class=definition><dfn class="link-ignore export">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (which is called the <a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> in the <a>ISO Chronology</a> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
  
- <p class=definition><dfn data-lt="floating time|plain time|local time" class="link-ignore export">Floating Time</dfn> A date or time value that is not fixed to a specific incremental time value or time zone. When you apply time zone information to floating times they produce a range of acceptable incremental time values, because they represent a nominal time which is described in the same way in all time zones around the world.</p>
+ <p class=definition><dfn data-lt="floating time|plain time|local time" class="link-ignore export">Floating Time</dfn> A date or time value that is not fixed to a specific incremental time value or time zone. Also called a <em>local</em> or <em>plain</em> date or time value.</p>
  
  <p class=definition><dfn class="lint-ignore export">Instant</dfn> An <a>incremental time</a> in the Unix <a>epoch</a>. An instant can be converted for display in any <a>calendar</a> and/or time zone and any two instants can be ordered in time.</p>
  
@@ -529,8 +533,8 @@
 <section>
 	<h3>Time Zone Identifiers</h3>
 	
-	<!-- ed note: RFC6557 is BCP175 -->
-	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[RFC6557]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
+	<!-- ed note: BCP175 is RFC6557 -->
+	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[BCP175]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
 
     <p>In the TZ database, time zones are given IDs that usually consist of a region and exemplar city. Regions can be continents (such as Europe or America) or oceans (such as Atlantic or Pacific). An exemplar city is a city in the time zone in question that should be well-known to people using the time zone. The TZ database also supplies aliases for many IDs; for example, <kbd>Asia/Ulan Bator</kbd> is equivalent to <kbd>Asia/Ulaanbaatar</kbd>. The Common Locale Data Repository [[CLDR]] can be used to provide a localized form for the IDs: see Appendix J in [[UAX35]]. Note: some systems, such as Apple Inc.'s MacOS, provide additional exemplar cities.</p>
     
