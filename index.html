@@ -366,6 +366,8 @@
  
  <p class=definition><dfn class="lint-ignore export">Era</dfn> A grouping within a <a>calendar</a> used to number years. Most eras start with year "1" and count up to the start of the next era. There are some exceptions to this: the Gregorian calendar's era "BCE" counts backwards, with 1 BCE being the year just before 1 CE (1 AD).</p>
  
+ <p class=definition><dfn>Ghost time</dfn> A <a>wall time</a> that can never exist because of time zone or <a>calendar</a> rules. For example, the date `2023-02-29` is a "ghost time" because 2023 is not a leap year in the Gregorian calendar. Similarly, in the `America/Los_Angeles` time zone, the <a>wall time</a> `2:34 a.m.` on the date `2024-03-10` is a "ghost time" because, due to daylight-savings time, the clock skips from `1:59 a.m.` directly to `3:00 a.m.`.</p>
+ 
  <p class=definition><dfn class="lint-ignore export">Timeline</dfn> In a given chronology, the fixed sequence of moments, measured against the <a>epoch</a>. A datetime value is said to be <em>on the timeline</em> if it is attached to a discrete moment in time. This is a hallmark of incremental time values.</p>
  
  <p class=definition><dfn class="link-ignore export">Incremental Time</dfn> A datetime value consisting of monotonically increasing integer units measured from a specific moment in time (which is called the <a>epoch</a>). For example, the moment <code>1970-01-02T00:00:00.000Z</code> in the <a>ISO Chronology</a> might have an incremental time value (measured in milliseconds) of <code>86400000</code>, since there are 86,400 seconds in a day and 1000 ms in a second.</p>
@@ -513,9 +515,9 @@
 <section id="recurring-use-case">
 	<h3>Recurring Events</h3>
 	
-	<p>A recurring event, such as a regular meeting, is usually defined by a set of rules that express a user's intent. In many cases, the user intends for the event to recur at a specific local <a>wall time</a> in a specific time zone. Each iteration is thus a <a href="#past-future-use-case">future event</a>.</p>
+	<p>A recurring event, such as a regular meeting, is usually defined by a set of rules that express a user's intent. In many cases, the user intends for the event to recur at a specific local <a>wall time</a> in a specific time zone. Each iteration is thus a <a href="#past-future-use-case">past or future event</a>.</p>
 	
-	<p>Each iteration of the event will need to compute a specific (<a>incremental time</a> value) start time and this value will depend on the governing time zone's rules regarding <a>local time offset</a>, summer time transitions, and the like.</p>
+	<p>Each iteration of the event will need to compute a specific (<a>incremental time</a> value) start time and this value will depend on the governing time zone's rules regarding <a>local time offset</a>, summer time transitions, and the like. It is important to use the time zone to perform these computations, as this avoids problems with assuming that the number of units between events (such as hours in a week or minutes in a day) is fixed. It can also help avoid <a>ghost times</a>.</p>
 </section>
 </section>
 
