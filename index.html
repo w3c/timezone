@@ -234,35 +234,40 @@
 </section>
 
 <section id="tz-definition">
-<h4>Definition and Mutability of Time Zones</h4>
+<h4>What defines a time zone?</h4>
 
 <p>While other schemes exist, many applications use the <a href="https://www.iana.org/time-zones">IANA Time Zone Database</a> [[BCP175]] and its associated set of identifiers to define time zones.</p>
 
-<p>Time zones, their rules, offsets, and observation (or non-observation) of summer time are controlled by a variety of international agreements, as well as national, regional, sub-national, and local governments. This can mean that neighboring areas that might otherwise share a UTC offset, even those with similar latitude (or shared borders) can have differing rules, such as those governing daylight-savings. Sometimes local authorities will change the boundaries of a zone or the offset used by a given region. Or they can make one-time changes to accommodate a special event (such as when hosting the Olympics). The time zone database tracks past changes so that applications can accurately compute <a>wall time</a> for past and future events.</p>
-
-<p>Because there are many governing bodies acting independently, the time zone database is not stabilized. New rule changes or updates to historical records are introduced into the database as they are made known (such as due to legislative action). There is no specific release cycle: updates can happen at any time. When changes affect future events, computing systems have to be updated lest their clocks show the wrong local time for a given region.</p>
-
 <p>Time zones are defined by these considerations:</p>
 
-    <ul>
-       <li><strong><a>Local Time Offset</a></strong> All time zones have, as their basis, an offset from <a>UTC</a>. The local time offset is the difference (positive or negative) between when a given time event is observed in UTC and in local time. If all time zones used one-hour offsets, there would be 24 world-wide time zones, ranging between 12 hours before UTC to 11 hours following UTC. However, there are some that use half-hour or even quarter-hour offsets (or even some odd offsets). In addition, some time zones fall outside a single-day span.</li>
-       <li><strong>Observation of summer time</strong> Some times zones include rules for observing summer time, while others do not. The observation of summer time is defined by a set of rules that include:
-        <ul>
-           <li><strong>Summer time offset</strong> The amount of time added to (or subtracted from) the <a>local time offset</a> when summer time is being observed. Nowadays this is always one hour, but other values are theoretically possible (and have been used historically).</li>
-           <li><strong>Starting date</strong> Usually described as a specific date on a specific calendar, such as the "first Sunday in April"</li>
-           <li><strong>Starting time</strong> The time of day when the switch occurs, such as "2 AM"</li>
-           <li><strong>Ending date</strong> Like the starting date, the date on which to switch back to "standard time"</li>
-           <li><strong>Ending time</strong> The time of day when the switch occurs, such as "2 AM"</li>
-        </ul></li>
+<p><strong><a>Local Time Offset</a></strong> Time zones are used to compute the offset of <a>wall time</a> from <a>UTC</a>. The local time offset is the difference (positive or negative) between when a given time event is observed in UTC and local time. If all time zones used one-hour offsets, there would be 24 world-wide time zones, ranging between 12 hours before UTC to 11 hours following UTC. However, there are some that use half-hour or even quarter-hour offsets (or even some odd offsets). In addition, some time zones fall outside a single 24-hour span.</p>
 
-        <li><strong>Adoption Dates</strong> Regions that currently have a specific local time offset and summer time behavior may have had different rules in the past. Correct handling of past time values requires treating such regions as separate time zones.</li>
+<p><strong>Observation of summer time</strong> Some times zones include rules for observing daylight-savings or summer time, while others do not. The observation of summer time is defined by a set of rules that include:
+    <ul>
+       <li><strong>Summer time offset</strong> The amount of time added to (or subtracted from) the <a>local time offset</a> when summer time is being observed. Nowadays this is always one hour, but other values are theoretically possible (and have been used historically).</li>
+       <li><strong>Starting date</strong> Usually described as a specific date on a specific calendar, such as the "first Sunday in April"</li>
+       <li><strong>Starting time</strong> The time of day when the switch occurs, such as "2 AM"</li>
+       <li><strong>Ending date</strong> Like the starting date, the date on which to switch back to "standard time"</li>
+       <li><strong>Ending time</strong> The time of day when the switch occurs, such as "2 AM"</li>
     </ul>
-    <aside class="example">
-        <p>Adoption dates can be applied to any of the values that define a time zone, such as the amount of summer time offset and the starting/ending dates or times for summer time. For example, prior to 2007, the United States started daylight-savings time at 2 a.m. on the first Sunday in April for each time zone observing daylight-savings. In 2007, the USA changed the start date and time to 2 a.m. on the second Sunday in March.</p>
-    </aside>
-    <aside class="example">
-		<p>Korea Standard Time and Japan Standard Time currently use the same UTC offset and neither uses summer time. However, Japan abandoned summer time in 1951, while South Korea used it last in 1988, so an application that tracks time values that reach back that far might need to track these time zones separately.</p>
-    </aside>
+</p>
+
+<p><strong>Adoption Dates</strong> Regions that currently have a specific local time offset and summer time behavior may have had different rules in the past (or plan to adopt new rules in the near future). Correct handling of past time values requires treating such regions as separate time zones.</p>
+
+<aside class="example">
+    <p>Adoption dates can be applied to any of the values that define a time zone, such as the amount of summer time offset and the starting/ending dates or times for summer time. For example, prior to 2007, the United States started daylight-savings time at 2 a.m. on the first Sunday in April for each time zone observing daylight-savings. In 2007, the USA changed the start date and time to 2 a.m. on the second Sunday in March.</p>
+</aside>
+<aside class="example">
+    <p>Korea Standard Time and Japan Standard Time currently use the same UTC offset and neither uses summer time. However, Japan abandoned summer time in 1951, while South Korea used it last in 1988, so an application that tracks time values that reach back that far might need to track these time zones separately.</p>
+</aside>
+</section>
+
+<section id="tz-stability">
+	<h4>Stability of time zones</h4>
+	
+	<p>Time zones, their rules, offsets, and observation (or non-observation) of summer time are controlled by a variety of international agreements, as well as national, regional, sub-national, and local governments. This can mean that neighboring areas that might otherwise share a UTC offset, even those with similar latitude (or shared borders) can have differing rules, such as those governing daylight-savings. Sometimes local authorities will change the boundaries of a zone or the offset used by a given region. Or they can make one-time changes to accommodate a special event (such as when hosting the Olympics). The time zone database tracks past changes so that applications can accurately compute <a>wall time</a> for past and future events.</p>
+
+    <p>Because there are many governing bodies acting independently, the time zone database is not stabilized. New rule changes or updates to historical records are introduced into the database as they are made known (such as due to legislative action). There is no specific release cycle: updates can happen at any time. When changes affect future events, computing systems have to be updated lest their clocks show the wrong local time for a given region or compute the wrong results for events affected by the change.</p>
 </section>
 </section>
 </section>
@@ -454,12 +459,12 @@
 	
 	<p>There are a number of ways applications can use date and time values. In this section we examine the different common use cases and the serializations or data structures to use for each.</p>
 	
-<section>
+<section id="timestamp-use-case">
 	<h3>Timestamps</h3>
 	
-	<p class="advisement">Use the <code>Instant</code> type for timestamp values.</p>
+	<p class="advisement">Use an incremental time value such as the <code>Instant</code> or <code>Date</code> type for timestamp values.</p>
 
-	<p>If your application can accurately generate incremental and/or field-based times based on UTC and the events are not tied to specific local time, all that is needed is the timestamp value itself. That is, if your application never needs to recover what the actual wall time was when event occurred and only cares about relative ordering of events. For example, if you merge log files from many machines together or if you are recording events in a log, a timestamp is perfectly adequate. For these types of time events, an Instant is sufficient.</p>
+	<p><strong>This is the most common use case: use a timestamp unless you have a reason not to.</strong> If your application can accurately generate incremental and/or field-based times based on UTC and the events are not tied to specific local time, all that is needed is the timestamp value itself. That is, if your application never needs to recover what the local <a>wall time</a> was when event occurred and only cares about relative ordering of events. For example, if you merge log files from many machines together or if you are recording events in a log, a timestamp is perfectly adequate. For these types of time events, an Instant is sufficient.</p>
 
     <p>In fact, it is often desirable to normalize time values to UTC (or a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
     
@@ -470,39 +475,51 @@
 	
 	<p>Many applications need to work with events that have already occurred, events in the future, or both. When working with these types of values, additional care needs to be used to avoid problems with the way that time zones interact with event planning.</p>
 	
-	<aside class="example" title="Example of time zone change effects on a future event">
-	<p>For example, consider an application that defines certificates. Each certificate has a date-time value that is the "start of authority" (<code>validFrom</code>) moment and a date-time value that is the "end of authority" (<code>validUntil</code>) moment.</p>
+	<aside class="example" title="Example of a time zone change affecting a future event" id="certificate-example">
+	   <p>For example, consider an application that defines certificates. Each certificate has a date-time value that is the "start of authority" (<code>validFrom</code>) moment and a date-time value that is the "end of authority" (<code>validUntil</code>) moment.</p>
 	
-	<p>Imagine that Certificate A is generated in the time zone <code>America/Los_Angeles</code>. This time zone has a raw offset from UTC of 8 hours and it currently observes daylight savings time between a date in March and a date in November. Certificate A is generated with a <code>validUntil</code> value of <code>2035-07-12T12:00:00-07:00</code>, reflecting the observation of DST during the month of July.</p>
+	   <p>Imagine that Certificate A is generated in the time zone <code>America/Los_Angeles</code>. This time zone has a raw offset from UTC of 8 hours and it currently observes daylight savings time between a date in March and a date in November. Certificate A is generated with a <code>validUntil</code> value of <code>2035-07-12T12:00:00-07:00</code>, reflecting the observation of DST during the month of July.</p>
 	
-	<p>After Certificate A was generated (but before it expires), imagine that the time zone <code>America/Los_Angeles</code> decides to stop observing daylight savings time. Then imagine a user wishes to generate Certificate B to replace Certificate A when it expires. If the new certificate is valid "from noon on 12 July", it might be serialized as <code>2035-07-12T12:00:00-08:00</code>, because the time zone's offset will not be in DST any longer. Notice that this is one hour later than the actual expiration of Certificate A.</p>
+	   <p>After Certificate A was generated (but before it expires), imagine that the time zone <code>America/Los_Angeles</code> decides to stop observing daylight savings time. Then imagine a user wishes to generate Certificate B to replace Certificate A when it expires. If the new certificate is valid "from noon on 12 July", it might be serialized as <code>2035-07-12T12:00:00-08:00</code>, because the time zone's offset will not be in DST any longer. Notice that this is one hour later than the actual expiration of Certificate A.</p>
 	</aside>
 	
-<section>
+<section id="past-only-use-case">
 	<h3>Past-only Events</h3>
 	
 	<p class="advisement">You SHOULD use <code>ZonedInstant</code> type for past-only events.</p>
 	<p class="advisement">You MAY use <code>ZonedInstant</code>, <code>ZonedLocalDateTime</code> or <code>ZonedOffsetDateTime</code> types for past events.</p>
 	
-	<p>For applications that deal only with events that occurred in the past (with no future events) and for which you need to know what the wall time was, the time zone of the event may be necessary additional data. Once an event is in the past, its relationship to incremental time becomes fixed and the rules for generating wall time remain static essentially forever. You might still need to know that an event occurred at <code>10:00</code> rather than at <code>14:00</code> local time. At a minimum, the <a>local time offset</a> is necessary, although knowing the complete time zone is necessary for some applications. Knowing the specific time zone allows one to reconstruct the time and its relationship to other wall times.</p>
+	<p>For an application that deals only with events that occurred in the past (with no future events) and for which you need to know what the wall time was, the <a>local time offset</a> of the event may be necessary additional data. Note that the time zone also provides the <a>local time offset</a> and is, thus, an acceptable substitute.</p>
+	
+	<p>Once an event is in the past, its <a>local time offset</a> to <a>UTC</a> becomes fixed. Therefore an incremental time with an offset can always produce <a>wall time</a> in a given <a>chronology</a>.</p>
+	
+	<p>Although <a>local time offset</a> is sufficient, knowing the specific time zone allows the application to reconstruct the time and its relationship to other time values and is usually more convenient when formating the value for display. For example, without the time zone identifier, it's not possible to accurately include the time zone's name or abbreviation into the display.</p>
 </section>
 
-<section>
+<section id="past-future-use-case">
 	<h3>Past and Future Events</h3>
 	
 	<p class="advisement">You SHOULD use <code>ZonedInstant</code> type if your application can have events in the future.</p>
 	
-	<p>If your application deals with both past and future events (for example, if you have a calendar or a meeting schedule), you’ll need additional time zone information to ensure proper time computation. At a minimum you will need the time zone, not merely an offset from UTC. This is because a future event's wall time depends on time zone related information, such as DST transitions. One issue with future events is that time zone rules can change from time to time and these may require an application to update affected data records in order to meet user’s expectations. This is because many systems actually store the time portion of the value as an incremental time and the incremental time needs to be changed if the wall time offset from UTC has been altered.</p>
+	<p>For an application that deals with both past and future events (for example, if you have a calendar or a meeting schedule), you will need the time zone (and not merely the <a>local time offset</a>) to ensure proper time computation. This is because a future event's <a>wall time</a> depends on time zone-related information, such as summer time transitions.</p>
+	
+	<p>One issue with future events is that time zone rules can <a href="#tz-stability">change from time to time</a> and these changes can require an application to update affected data records in order to meet user’s expectations. This is because many systems actually store or depend on using an <a>incremental time</a> value for date/time related operations (such as scheduling or notifications). When the time zone rules change, the corresponding the incremental time value needs to be changed if the <a>wall time</a> of the event is expected to stay the time. See <a href="#certificate-example">above</a> for an example.</p>
+	
+	<aside class="note">
+		<p>Applications that pre-compute or store <a>incremental time</a> values for future events might need to refresh the values after the local runtime's copy of the time zone database is updated, since time zone rules affecting these values might have been updated.</p>
+	</aside>
 </section>
 
-<section>
+<section id="recurring-use-case">
 	<h3>Recurring Events</h3>
 	
-	<p>A recurring event, such as a regular meeting, is usually defined by a set of rules that express a user's intent. In some cases, the user intends for the event to recur at a specific local time (and thus, wants to tie it to local time changes, such as DST transitions). In other cases, the user wants the time tied to another time zone, to a specific UTC offset, or to other events. So, for example, a recurring weekly event might need to add 167, 168, or 169 hours to "last week's occurrence" of an event to compute this week's start time, depending on whether a DST transition has occurred and which direction the transition was in.</p>
+	<p>A recurring event, such as a regular meeting, is usually defined by a set of rules that express a user's intent. In many cases, the user intends for the event to recur at a specific local <a>wall time</a> in a specific time zone. Each iteration is thus a <a href="#past-future-use-case">future event</a>.</p>
+	
+	<p>Each iteration of the event will need to compute a specific (<a>incremental time</a> value) start time and this value will depend on the governing time zone's rules regarding <a>local time offset</a>, summer time transitions, and the like.</p>
 </section>
 </section>
 
-<section>
+<section id="floating-use-case">
 	<h3>Floating Time Values</h3>
 	
 	<p class="advisement">You SHOULD use the appropriate floating time type, such as <code>LocalDateTime</code> (for values with both date and time), <code>LocalDate</code> (for date values), or <code>LocalTime</code> (for time-only values) for values that are not tied to a specific offset or time zone rules.</p>
@@ -515,15 +532,15 @@
 	
 	<p>Sometimes a <a>producer</a> will emit a <a>floating time</a> value when the <a data-cite="i18n-glossary#consumer">consumer</a> expects or requires an <a>incremental time</a> value. In other cases, a <a data-cite="i18n-glossary#consumer">consumer</a> might need to convert a local or otherwise incremental time value into a floating date or time.</p>
 	
-	<p class="definition"><dfn class="link-ignore export">Floating a time value</dfn> means to remove the value from the timeline by deleting any associated time zone and zone offset information from the value.</p>
+	<p class="definition">To <dfn class="link-ignore export" data-lt="float">float a date or time value</dfn> means to remove an <a>incremental time</a> value from the <a>timeline</a> by deleting any associated time zone and zone offset information from the value.</p>
 	
-	<p>One common reason to float a value is if the data type used to collect or process the value is an incremental type but the value isn't. For example, if you received a user's birth date as a `Date` object. Removing the time zone or offset makes it easier to format the value later without the field values changing in correctly.</p>
+	<p>One common reason to float a value is if the data type used to collect or process the value is an incremental type (such as an `Instant` or Javascript `Date`) but the value isn't. For example, if you received a user's birth date as a `Date` object. Removing the time zone or offset makes it easier to format the value later without the field values changing incorrectly.</p>
 	
-	<p class="definition"><dfn  class="link-ignore export">Unfloating a time value</dfn> means to attach a floating time value to the timeline by adding a time zone or zone offset to the value.</p>
+	<p class="definition">To <dfn  class="link-ignore export" data-lt="unfloat">unfloat a date or time value</dfn> means to attach a <a>floating time</a> value to the <a>timeline</a> by adding a time zone or zone offset to the value.</p>
 	
 	<p>One common reason to unfloat a value is that the serialized value might not contain an offset but the value needs to be compared to other incremental values or displayed to the user in local time.</p>
 	
-	<p class="advisement">Values received without a time zone or zone offset SHOULD generally be treated as if they are in UTC. Specifications SHOULD provide guidance on how to handle these values. Implementations MAY use some other value for the offset, such as local time, but only if there is a good reason to do so.</p>
+	<p class="advisement">Values received without a time zone or zone offset SHOULD generally be treated as if they are in UTC. Specifications SHOULD provide guidance on how to handle these values. Implementations MAY use some other value for the offset, such as the user agent's local time zone, but only if there is a good reason to do so.</p>
 </section>
 </section>
 
