@@ -468,7 +468,13 @@
 
 	<p><strong>This is the most common use case: use a timestamp unless you have a reason not to.</strong> If your application can accurately generate incremental and/or field-based times based on UTC and the events are not tied to specific local time, all that is needed is the timestamp value itself. That is, if your application never needs to recover what the local <a>wall time</a> was when event occurred and only cares about relative ordering of events. For example, if you merge log files from many machines together or if you are recording events in a log, a timestamp is perfectly adequate. For these types of time events, an Instant is sufficient.</p>
 
-    <p>In fact, it is often desirable to normalize time values to UTC (or a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
+    <p>It is usually desirable to normalize timestamp values to UTC (or, less commonly, a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
+    
+    <p class="advisement">When in doubt, use [=UTC=] for serializing, storing, and exchanging date and time values.</p>
+	
+	<p>Bear in mind that the [=local time offset=] doesn't change the relationship of a datetime value to the [=timeline=]. Serializing timestamp values with an offset makes the values more difficult to work with, particularly in systems where multiple offsets might be in use.</p>
+	
+	<p>In other use cases, we'll see that storing the [=time zone=] is valuable or even required for consistent results. However, this never applies to timestamp values. The only thing that storing the [=time zone=] might provide is the originating [=wall time=].</p>
     
 </section>
 
@@ -548,6 +554,65 @@
 
 <section>
 	<h2>Additional Considerations</h2>
+	
+<section>
+	<h3>General Recommendations</h3>
+	
+	<p class="advisement">Whenever possible, use [=UTC=] or choose a consistent time zone when creating time-based content or data value so that values from discrete sources can be compared more readily.</p>
+	
+	<aside class="example">
+	<p>It is much easier to work with and debug data values that can be compared visually. When values use different offsets or time zones, the user has to mentally translate the value. This can lead to mistakes. When you read the "mixed offset" list of timestamps below, is it easy to spot that the last two items are identical or that the first three are different?</p>
+
+	<table>
+		<thead>
+		<tr>
+			<th>Mixed Offsets</th>
+			<th style="padding-left: 30px">Same Offset</th>
+		</tr>
+		</thead>
+        <tbody>
+			<tr>
+				<td>
+<code>
+2007-01-01T<strong>01:00:00.000</strong>-01:00<br>
+2007-01-01T<strong>01:00:00.000</strong>Z<br>
+2007-01-01T<strong>01:00:00.000</strong>+01:00<br>
+2006-12-31T<strong>23:00:00.000</strong>-01:00
+</code>
+				</td>
+				<td style="padding-left: 30px">
+<code>
+2007-01-01T<strong>02:00:00</strong>Z<br>
+2007-01-01T<strong>01:00:00</strong>Z<br>
+2007-01-01T<strong>00:00:00</strong>Z<br>
+2007-01-01T<strong>00:00:00</strong>Z
+</code>
+				</td>
+			</tr>
+        </tbody>		
+	</table>
+	</aside>
+	
+	<p class="advisement">Bear in mind best practices to assist users in selecting their time zone, including keeping track of their preferences.</p>
+	
+	<p>Some best practices when implementing time zone selection and management:
+	
+	<ul>
+	  <li>Allow the user to choose a time zone and keep it associated with the user's session or profile if possible.
+      <li>Consider using exemplar cities to help users identify the time zone.
+      <li>Use the country as a hint, since most countries <a href="#select-lto">have only a single time zone</a>.
+      <li>Omit historical time zones whenever possible.
+      <li>Use IP-geolocation, cellular radio country code, GPS data, or other external data sources if available.
+    </ul>
+    </p>
+    
+    <p class="advisement">If you have data that includes implicit and fixed explicit [=local time offsets=], before applying any date- or time-sensitive operations, adjust the zone offset of the implicit data to UTC with functions for zone offset adjustment, cf. <a href="https://www.w3.org/TR/xpath-functions/#dateTime-arithmetic">this section</a> in [[[xpath-functions]]].</p>
+    
+    <p class="advisement">If you have data that contains both implicit and fixed explicit [=local time offsets=] and you do not want to adjust the data subset which already has a zone offset, make sure that you recognize this data subset, for example via the <a href="https://www.w3.org/TR/xpath-functions/#component-extraction-dateTime">component extraction functions</a> in [[[xpath-functions]]].</p>
+
+
+	
+</section>
 
 <section>
 	<h3>Time Zone Identifiers</h3>
@@ -617,7 +682,7 @@
 
 </section>
 
-<section>
+<section id="select-lto">
 	<h3>Selecting the Time Zone using the Local Time Offset</h3>
 	
 	<p>Most countries are either small enough in area or, for practical reasons, choose to observe only a single time zone for the entire country. This means that knowing the region or country of the user is frequently sufficient to identify the time zone of the user as well. At the time this document was published, only twenty countries had more than one observed time zone. These countries are: Argentina, Australia, Brazil, Canada, Chile, Democratic Republic of the Congo, Ecuador, France, Greenland, Indonesia, Kazakhstan, Kiribati, Mexico, Micronesia, Mongolia, New Zealand, Portugal, Russia, Spain, and the United States.</p>
