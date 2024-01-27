@@ -207,7 +207,7 @@
 
 <p>The modern standardized system of timekeeping in computer systems is generally based on a few core standards. <a>Universal Coordinated Time</a> (or "UTC"), adopted in 1972 CE, is used for global synchronization of clocks and to define local time zone variations. Many systems set computer clocks using the UNIX epoch (counting time from January 1, 1970 in UTC). Standards such as [[ISO8601]] or [[RFC3339]] provide serialization schemes for the interchange of date and time values and most programming languagues or data formats provide data structures for storing or exchanging date and time values. These types of systems are usually based on the <a>ISO Chronology</a> (also known as the <em>Gregorian calendar</em>), although they can be converted to other systems, such as the one of the Islamic calendars, the Ethiopic or Chinese solar-lunar calendars, and so forth.</p>
 
-
+</section>
 
 <section id="what-is-time-zone">
 <h3>What is a Time Zone?</h3>
@@ -270,30 +270,34 @@
     <p>Because there are many governing bodies acting independently, the time zone database is not stabilized. New rule changes or updates to historical records are introduced into the database as they are made known (such as due to legislative action). There is no specific release cycle: updates can happen at any time. When changes affect future events, computing systems have to be updated lest their clocks show the wrong local time for a given region or compute the wrong results for events affected by the change.</p>
 </section>
 </section>
-</section>
+
 
 <section id="incremental-times">
 <h3>Incremental Time</h3>
 
-<p><a>Incremental time</a> measures time using fixed integer units that increase monotonically from a specific point in time (called the "epoch"). Most programming languages and operating environments provide or use incremental time for working with time values. Incremental time is not usually seen directly by users, but is formatted into <a>wall time</a> for human consumption.</p>
+<p><a>Incremental time</a> measures time using fixed integer units that increase monotonically from a specific point in time called the [=epoch=]. Most programming languages and operating environments provide data types and APIs that use incremental time to represent or operate on time values. Incremental time is not usually seen directly by users. Instead, the incremental time value is formatted into a familiar <a>wall time</a> representation for human consumption.</p>
 
-<p>Date and time values based on incremental time are time-zone-independent, since at any given moment it is the same time in UTC everywhere: the values can be transformed for display for any particular time zone or offset, but the value itself is not tied to a specific location.</p>
+<p>Incremental date and time values are indepedent of time zone. This is because, as long as the system clock is set correctly, the monotonic time in the Unix [=Epoch=] is the same everywhere at any given instant. The value can be transformed for display using various [=chronologies=], time zone rules or, [=local time offsets=], but the value itself is not tied to a specific location or [=wall time=] representation.</p>
 
-<p>Not all incremental time representations are tied to an <a>epoch</a>. A monotonic clock system might just be tied to the last time the hardware clock was restarted or some other event.</p>
+<p>Since incremental time values are just integers, any two incremental time values can be put into order as a sequence of events just by comparing the values. That is, any set of incremental time values attached to a specific <a>chronology</a> form a <a>timeline</a>.</p>
 
-<p>Since incremental time values are just integers, any two time values can be put into order as a sequence of events just by comparing the values. That is, any set of incremental time values attached to a specific <a>chronology</a> form a <a>timeline</a>.</p>
+<p class="note">Not all incremental time values are tied to specific <a>epoch</a>. A system's clock might be counting from the last time the hardware clock was restarted or some other event. Date values close to January 1, 1970 are often due to an incremental time value of <kbd>0</kbd> or due to malfunctions in or failure to set the system clock.</p>
+
+
 </section>
 
 <section id="floating-times">
 <h3>Floating Time</h3>
 
-<p>A <a>floating time</a> is a date or time value in a <a>calendar</a> that is not a specific <a>instant</a> in time, that is, it is not an <a>instant</a> in a <a>chronology</a> on a <a>timeline</a>. Floating time values are also independent of a specific time zone.</p>
+<p>A <a>floating time</a> is a date or time value in a <a>calendar</a> that is not a specific <a>instant</a> in time. That is, it is not on a <a>timeline</a>. Floating time values are also independent of a specific time zone.</p>
 
-<p>Applications and data formats need <a>floating time</a> values when <a>wall time</a> is more important to the value than putting the event into a <a>chronology</a>. This makes them useful for when an event can apply to many different time values or are independent of location. Examples of floating date values include your birthdate, holidays, or anniversary dates. Floating time values can include things such as hours of operation (as a policy, rather than for a specific location).</p>
+<p>Applications and data formats need <a>floating time</a> values when <a>wall time</a> is more important to the value than putting the event onto a <a>timeline</a>. This makes them useful for when the datetime value is independent of location. Examples of floating date values include your birthdate, holidays, or anniversary dates. Time values that float can include things such as hours of operation as a policy, rather than for a specific location.</p>
 
-<aside class="note"><a>Floating times</a> have different names in different places. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
+<p><a>Floating time</a> values can be serialized in various ISO8601 formats by omitting the [=local time offset=] (or time zone identifier, such as <code>Z</code> for [=UTC=]). Data types for floating time values are less common in programming languages and operating environments. Errors are often the result when a floating time value is deserialized into into an [=incremental time=] type.</p>
 
-<aside class="example">
+<aside class="note"><a>Floating times</a> have different names in different specifications. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
+
+<aside class="example" title="Floating Time">
    <p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
 
    <p>France has a number of overseas departments which do not share a time zone with Metropolitan France. In this example, we'll look at three French time zones: <code>Europe/Paris</code>, <code>Pacific/Noumea</code> (the time zone used in New Caledonia), and <code>Pacific/Tahiti</code> (one of the timezones in French Polynesia).</p>
