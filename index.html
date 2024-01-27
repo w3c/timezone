@@ -207,7 +207,7 @@
 
 <p>The modern standardized system of timekeeping in computer systems is generally based on a few core standards. <a>Universal Coordinated Time</a> (or "UTC"), adopted in 1972 CE, is used for global synchronization of clocks and to define local time zone variations. Many systems set computer clocks using the UNIX epoch (counting time from January 1, 1970 in UTC). Standards such as [[ISO8601]] or [[RFC3339]] provide serialization schemes for the interchange of date and time values and most programming languagues or data formats provide data structures for storing or exchanging date and time values. These types of systems are usually based on the <a>ISO Chronology</a> (also known as the <em>Gregorian calendar</em>), although they can be converted to other systems, such as the one of the Islamic calendars, the Ethiopic or Chinese solar-lunar calendars, and so forth.</p>
 
-
+</section>
 
 <section id="what-is-time-zone">
 <h3>What is a Time Zone?</h3>
@@ -262,6 +262,89 @@
 </aside>
 </section>
 
+<section>
+	<h3>Time Zone Identifiers</h3>
+	
+	<!-- ed note: BCP175 is RFC6557 -->
+	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[BCP175]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
+
+    <p>In the TZ database, time zones are given IDs that usually consist of a region and exemplar city. Regions can be continents (such as Europe or America) or oceans (such as Atlantic or Pacific). An exemplar city is a city in the time zone in question that should be well-known to people using the time zone. The TZ database also supplies aliases for many IDs; for example, <kbd>Asia/Ulan Bator</kbd> is equivalent to <kbd>Asia/Ulaanbaatar</kbd>. The Common Locale Data Repository [[CLDR]] can be used to provide a localized form for the IDs: see Appendix J in [[UAX35]]. Note: some systems, such as Apple Inc.'s MacOS, provide additional exemplar cities.</p>
+    
+    <aside class="example" title="Examples of time zone IDs">
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><kbd>America/Los_Angeles</kbd></td>
+					<td>US Pacific time zone</td>
+				</tr>
+    			<tr>
+					<td><kbd>Europe/London</kbd></td>
+					<td>UK time; not to be confused with UTC, since this zone observes Summer Time</td>
+				</tr>
+				<tr>
+					<td><kbd>Asia/Beijing</kbd></td>
+					<td>China Standard Time</td>
+				</tr>
+				<tr>
+					<td><kbd>Asia/Calcutta</kbd></td>
+					<td>India Standard Time; observes a 30 minute offset</td>
+				</tr>
+				<tr>
+					<td><kbd>Australia/Sydney</kbd></td>
+					<td>Sydney time</td>
+				</tr>
+				<tr>
+					<td><kbd>Pacific/Kiritimati</kbd></td>
+					<td>Line Islands time; one of the earliest time zones in the world</td>
+				</tr>
+				<tr>
+					<td><kbd>Pacific/Midway</kbd></td>
+					<td>Samoa time; one of the last time zones in the world</td>
+				</tr>
+				<tr>
+					<td><kbd>Atlantic/Azores</kbd></td>
+					<td>Azorian time</td>
+				</tr>
+                <tr>
+					<td><kbd>America/Argentina/San_Luis</kbd></td>
+					<td>Western Argentina time; one of few modern tripartite IDs</td>
+				</tr>
+				<tr>
+					<td><kbd>Australia/Eucla</kbd></td>
+					<td>Australia Central Western time; observes a 45 minute offset</td>
+				</tr>
+				
+			</tbody>
+		</table>
+    </aside>
+    
+    <p class="advisement">Specify the use of IANA time zone IDs in standards, protocols, or document formats as the identifier for time zones.</p>
+    <p class="advisement">Avoid special purpose time zone IDs, such as those beginning with <kbd>Etc/</kbd>.</p>
+    <p class="advisement">Use <code>continent/city</code> IDs in preference to legacy zone IDs such as those starting with <kbd>US/</kbd>.</p>
+
+</section>
+
+<section id="select-lto">
+	<h3>Selecting the Time Zone using the Local Time Offset</h3>
+	
+	<p>Most countries are either small enough in area or, for practical reasons, choose to observe only a single time zone for the entire country. This means that knowing the region or country of the user is frequently sufficient to identify the time zone of the user as well. At the time this document was published, only twenty countries had more than one observed time zone. These countries are: Argentina, Australia, Brazil, Canada, Chile, Democratic Republic of the Congo, Ecuador, France, Greenland, Indonesia, Kazakhstan, Kiribati, Mexico, Micronesia, Mongolia, New Zealand, Portugal, Russia, Spain, and the United States.</p>
+
+    <p>Some special cases exist within this list:</p>
+
+    <ul>
+       <li><strong>Countries with maritime or overseas possessions</strong> Chile, Ecuador, France, New Zealand, and Portugal each have islands or other wide-ranging geographic areas far from the main part of the country. For example, Easter Island is part of Chile, the Galapagos Islands are part of Ecuador, and the Azores are part of Portugal. These offshore possessions are the source of additional time zones in each of these countries.</li>
+       <li><strong>France</strong> France is a special case of the above. There are several regions that are part of France, even though they might have their own ISO 3166-1 code. These include Reunion Island (in the Indian Ocean) and French Guiana (in South America). Additionally, French Polynesia is divided into three time zones.</li>
+    </ul>
+
+    <p>Within each of the countries that observe multiple time zones, knowing the current offset and current time will usually allow you to determine the time zone accurately. An exception to this is the United States: there exist some regions, such as Arizona, whose time zone cannot be determined strictly from the current time, country/region code, and offset, although an inferred time zone will always work for current time applications (not future and past times).</p>
+</section>
+
 <section id="tz-stability">
 	<h4>Stability of time zones</h4>
 	
@@ -270,30 +353,39 @@
     <p>Because there are many governing bodies acting independently, the time zone database is not stabilized. New rule changes or updates to historical records are introduced into the database as they are made known (such as due to legislative action). There is no specific release cycle: updates can happen at any time. When changes affect future events, computing systems have to be updated lest their clocks show the wrong local time for a given region or compute the wrong results for events affected by the change.</p>
 </section>
 </section>
-</section>
+
 
 <section id="incremental-times">
 <h3>Incremental Time</h3>
 
-<p><a>Incremental time</a> measures time using fixed integer units that increase monotonically from a specific point in time (called the "epoch"). Most programming languages and operating environments provide or use incremental time for working with time values. Incremental time is not usually seen directly by users, but is formatted into <a>wall time</a> for human consumption.</p>
+<p><a>Incremental time</a> measures time using fixed integer units that increase monotonically from a specific point in time called the [=epoch=]. Most programming languages and operating environments provide data types and APIs that use incremental time to represent or operate on datetime values. Incremental time is not usually seen directly by users. Instead, the incremental time value is formatted into a familiar <a>wall time</a> representation for human consumption.</p>
 
-<p>Date and time values based on incremental time are time-zone-independent, since at any given moment it is the same time in UTC everywhere: the values can be transformed for display for any particular time zone or offset, but the value itself is not tied to a specific location.</p>
+<p>The most common form of [=incremental time=] is counted in milliseconds (or, occasionally, nanoseconds) in the Unix Epoch. In this system, the value <code>0</code> represents midnight, January 1, 1970 in the UTC time zone. Negative numbers represent datetime values earlier than this moment, while positive numbers denote later moments in time. The [[ISO8601]] representation of this would be <code>1970-01-01T00:00:00.000Z</code>. Examples of this form of incremental time include:
+<ul>
+	<li>Java: <code>java.util.Date</code></li>
+	<li>C/C++: <code>time_t</code></li>
+	<li>JavaScript: <code>Date</code></li>
+</ul></p>
 
-<p>Not all incremental time representations are tied to an <a>epoch</a>. A monotonic clock system might just be tied to the last time the hardware clock was restarted or some other event.</p>
+<p>Since incremental time values are just integers, any two incremental time values can be put into order as a sequence of events just by comparing the values. That is, every incremental time value can be put on a <a>timeline</a>.</p>
 
-<p>Since incremental time values are just integers, any two time values can be put into order as a sequence of events just by comparing the values. That is, any set of incremental time values attached to a specific <a>chronology</a> form a <a>timeline</a>.</p>
+<p>This also means that incremental datetime values are indepedent of (and generally do not encode) their originating time zone. This is because the monotonic time in the Unix [=Epoch=] is the same everywhere at any given instant. Each incremental time value can be transformed for display using various [=chronologies=], time zone rules or, [=local time offsets=].</p>
+
+<p class="note">Not all incremental time values are tied to specific <a>epoch</a>. A system's clock might be counting from the last time the hardware clock was restarted or some other event. Date values close to January 1, 1970 are often due to an incremental time value of <kbd>0</kbd> or due to malfunctions in or failure to set the system clock.</p>
 </section>
 
 <section id="floating-times">
 <h3>Floating Time</h3>
 
-<p>A <a>floating time</a> is a date or time value in a <a>calendar</a> that is not a specific <a>instant</a> in time, that is, it is not an <a>instant</a> in a <a>chronology</a> on a <a>timeline</a>. Floating time values are also independent of a specific time zone.</p>
+<p>A <a>floating time</a> is a date or time value in a <a>calendar</a> that is not a specific <a>instant</a> in time. Applications and data formats use a <a>floating time</a> value when the <a>wall time</a> is more important to the value than putting the event onto a <a>timeline</a>. Generally, a floating time value will include only the date (<code>2024-01-27</code>) or only the time (<code>13:00:00</code>), but datetime values (<code>2024-01-27T13:00:00.000</code>) are sometimes also needed.</p> 
 
-<p>Applications and data formats need <a>floating time</a> values when <a>wall time</a> is more important to the value than putting the event into a <a>chronology</a>. This makes them useful for when an event can apply to many different time values or are independent of location. Examples of floating date values include your birthdate, holidays, or anniversary dates. Floating time values can include things such as hours of operation (as a policy, rather than for a specific location).</p>
+<p>[=Floating time=] values are used when a given value's local [=wall time=] expression needs to stay constant, regardless of the viewing user's time zone. For example, if your birthdate were <samp>June 1, 1980</samp> this might be represented as the [=floating time=] <code>1980-06-01</code>. It does not matter if you view this date in Tokyo, London, or San Francisco: you always want the displayed value to remain constant. Time values that float can include things such as hours of operation as a policy, rather than for a specific location.</p>
 
-<aside class="note"><a>Floating times</a> have different names in different places. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
+<p><a>Floating time</a> values are often serialized in various ISO8601 formats by omitting the [=local time offset=] (or time zone identifier, such as <code>Z</code> for [=UTC=]). Data types for floating time values are less common in programming languages and operating environments. Errors are often the result when a floating time value is deserialized into into an [=incremental time=] type, which ties the value to UTC.</p>
 
-<aside class="example">
+<aside class="note"><a>Floating times</a> have different names in different specifications. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
+
+<aside class="example" title="Floating Time">
    <p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
 
    <p>France has a number of overseas departments which do not share a time zone with Metropolitan France. In this example, we'll look at three French time zones: <code>Europe/Paris</code>, <code>Pacific/Noumea</code> (the time zone used in New Caledonia), and <code>Pacific/Tahiti</code> (one of the timezones in French Polynesia).</p>
@@ -341,6 +433,22 @@
    </table>
 </aside>
 
+</section>
+
+<section>
+	<h3>Converting between incremental and floating time values</h3>
+	
+	<p>Sometimes a <a>producer</a> will emit a <a>floating time</a> value when the <a data-cite="i18n-glossary#consumer">consumer</a> expects or requires an <a>incremental time</a> value. In other cases, a <a data-cite="i18n-glossary#consumer">consumer</a> might need to convert a local or otherwise incremental time value into a floating date or time.</p>
+	
+	<p class="definition">To <dfn class="link-ignore export" data-lt="float|floating">float a date or time value</dfn> means to remove an <a>incremental time</a> value from the <a>timeline</a> by deleting any associated time zone and zone offset information from the value.</p>
+	
+	<p>One common reason to float a value is if the data type used to collect or process the value is an incremental type (such as an `Instant` or Javascript `Date`) but the value isn't. For example, if you received a user's birth date as a `Date` object. Removing the time zone or offset makes it easier to format the value later without the field values changing incorrectly.</p>
+	
+	<p class="definition">To <dfn  class="link-ignore export" data-lt="unfloat|unfloating">unfloat a date or time value</dfn> means to attach a <a>floating time</a> value to the <a>timeline</a> by adding a time zone or zone offset to the value.</p>
+	
+	<p>One common reason to unfloat a value is that the serialized value might not contain an offset but the value needs to be compared to other incremental values or displayed to the user in local time.</p>
+	
+	<p class="advisement">Values received without a time zone or zone offset SHOULD generally be treated as if they are in UTC. Specifications SHOULD provide guidance on how to handle these values. Implementations MAY use some other value for the offset, such as the user agent's local time zone, but only if there is a good reason to do so.</p>
 </section>
 
 <section>
@@ -468,7 +576,13 @@
 
 	<p><strong>This is the most common use case: use a timestamp unless you have a reason not to.</strong> If your application can accurately generate incremental and/or field-based times based on UTC and the events are not tied to specific local time, all that is needed is the timestamp value itself. That is, if your application never needs to recover what the local <a>wall time</a> was when event occurred and only cares about relative ordering of events. For example, if you merge log files from many machines together or if you are recording events in a log, a timestamp is perfectly adequate. For these types of time events, an Instant is sufficient.</p>
 
-    <p>In fact, it is often desirable to normalize time values to UTC (or a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
+    <p>It is usually desirable to normalize timestamp values to UTC (or, less commonly, a specific UTC offset) so that separate series of data can be easily compared and merged. Information about local offset may be valuable in recovering the actual wall time, but time zone rules are probably only rarely interesting.</p>
+    
+    <p class="advisement">When in doubt, use [=UTC=] for serializing, storing, and exchanging date and time values.</p>
+	
+	<p>Bear in mind that the [=local time offset=] doesn't change the relationship of a datetime value to the [=timeline=]. Serializing timestamp values with an offset makes the values more difficult to work with, particularly in systems where multiple offsets might be in use.</p>
+	
+	<p>In other use cases, we'll see that storing the [=time zone=] is valuable or even required for consistent results. However, this never applies to timestamp values. The only thing that storing the [=time zone=] might provide is the originating [=wall time=].</p>
     
 </section>
 
@@ -519,7 +633,7 @@
 	
 	<p>Each iteration of the event will need to compute a specific (<a>incremental time</a> value) start time and this value will depend on the governing time zone's rules regarding <a>local time offset</a>, summer time transitions, and the like. It is important to use the time zone to perform these computations, as this avoids problems with assuming that the number of units between events (such as hours in a week or minutes in a day) is fixed. It can also help avoid <a>ghost times</a>.</p>
 </section>
-</section>
+
 
 <section id="floating-use-case">
 	<h3>Floating Time Values</h3>
@@ -527,111 +641,74 @@
 	<p class="advisement">You SHOULD use the appropriate floating time type, such as <code>LocalDateTime</code> (for values with both date and time), <code>LocalDate</code> (for date values), or <code>LocalTime</code> (for time-only values) for values that are not tied to a specific offset or time zone rules.</p>
 	
 	<p>If your application deals with a date or time value that is not tied to a specific local interpretation or which needs to be interpreted as a different range of incremental time values in different locations, serializing the value without an offset or time zone identifer communicates that the value is a <a>floating time</a>.</p>
-</section>
-
-<section>
-	<h3>Floating and Unfloating Time</h3>
 	
-	<p>Sometimes a <a>producer</a> will emit a <a>floating time</a> value when the <a data-cite="i18n-glossary#consumer">consumer</a> expects or requires an <a>incremental time</a> value. In other cases, a <a data-cite="i18n-glossary#consumer">consumer</a> might need to convert a local or otherwise incremental time value into a floating date or time.</p>
-	
-	<p class="definition">To <dfn class="link-ignore export" data-lt="float">float a date or time value</dfn> means to remove an <a>incremental time</a> value from the <a>timeline</a> by deleting any associated time zone and zone offset information from the value.</p>
-	
-	<p>One common reason to float a value is if the data type used to collect or process the value is an incremental type (such as an `Instant` or Javascript `Date`) but the value isn't. For example, if you received a user's birth date as a `Date` object. Removing the time zone or offset makes it easier to format the value later without the field values changing incorrectly.</p>
-	
-	<p class="definition">To <dfn  class="link-ignore export" data-lt="unfloat">unfloat a date or time value</dfn> means to attach a <a>floating time</a> value to the <a>timeline</a> by adding a time zone or zone offset to the value.</p>
-	
-	<p>One common reason to unfloat a value is that the serialized value might not contain an offset but the value needs to be compared to other incremental values or displayed to the user in local time.</p>
-	
-	<p class="advisement">Values received without a time zone or zone offset SHOULD generally be treated as if they are in UTC. Specifications SHOULD provide guidance on how to handle these values. Implementations MAY use some other value for the offset, such as the user agent's local time zone, but only if there is a good reason to do so.</p>
+	<p>Such applications are more common than they first appear. We've already seen examples in this document, such as a list of holidays or a user's birth date. Any "anniversary" type of date (hire date, termination date, wedding date, etc.) is generally best representated a [=floating time=] value. Another application is when you collect statistics using [=instants=] but need to group them into durable time buckets by [=floating=] the values.</p>
 </section>
 </section>
 
 <section>
 	<h2>Additional Considerations</h2>
-
-<section>
-	<h3>Time Zone Identifiers</h3>
 	
-	<!-- ed note: BCP175 is RFC6557 -->
-	<p>The most definitive reference for identifying sets of time zone rules is the IANA Timezone Database [[BCP175]], which is used by systems such as various Linux distributions, Java, CLDR, ICU, and many other systems and libraries. Other systems exist: for example, Microsoft Windows uses its own data set and identifiers.</p>
-
-    <p>In the TZ database, time zones are given IDs that usually consist of a region and exemplar city. Regions can be continents (such as Europe or America) or oceans (such as Atlantic or Pacific). An exemplar city is a city in the time zone in question that should be well-known to people using the time zone. The TZ database also supplies aliases for many IDs; for example, <kbd>Asia/Ulan Bator</kbd> is equivalent to <kbd>Asia/Ulaanbaatar</kbd>. The Common Locale Data Repository [[CLDR]] can be used to provide a localized form for the IDs: see Appendix J in [[UAX35]]. Note: some systems, such as Apple Inc.'s MacOS, provide additional exemplar cities.</p>
-    
-    <aside class="example" title="Examples of time zone IDs">
-		<table>
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Description</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td><kbd>America/Los_Angeles</kbd></td>
-					<td>US Pacific time zone</td>
-				</tr>
-    			<tr>
-					<td><kbd>Europe/London</kbd></td>
-					<td>UK time; not to be confused with UTC, since this zone observes Summer Time</td>
-				</tr>
-				<tr>
-					<td><kbd>Asia/Beijing</kbd></td>
-					<td>China Standard Time</td>
-				</tr>
-				<tr>
-					<td><kbd>Asia/Calcutta</kbd></td>
-					<td>India Standard Time; observes a 30 minute offset</td>
-				</tr>
-				<tr>
-					<td><kbd>Australia/Sydney</kbd></td>
-					<td>Sydney time</td>
-				</tr>
-				<tr>
-					<td><kbd>Pacific/Kiritimati</kbd></td>
-					<td>Line Islands time; one of the earliest time zones in the world</td>
-				</tr>
-				<tr>
-					<td><kbd>Pacific/Midway</kbd></td>
-					<td>Samoa time; one of the last time zones in the world</td>
-				</tr>
-				<tr>
-					<td><kbd>Atlantic/Azores</kbd></td>
-					<td>Azorian time</td>
-				</tr>
-                <tr>
-					<td><kbd>America/Argentina/San_Luis</kbd></td>
-					<td>Western Argentina time; one of few modern tripartite IDs</td>
-				</tr>
-				<tr>
-					<td><kbd>Australia/Eucla</kbd></td>
-					<td>Australia Central Western time; observes a 45 minute offset</td>
-				</tr>
-				
-			</tbody>
-		</table>
-    </aside>
-    
-    <p class="advisement">Specify the use of IANA time zone IDs in standards, protocols, or document formats as the identifier for time zones.</p>
-    <p class="advisement">Avoid special purpose time zone IDs, such as those beginning with <kbd>Etc/</kbd>.</p>
-    <p class="advisement">Use <code>continent/city</code> IDs in preference to legacy zone IDs such as those starting with <kbd>US/</kbd>.</p>
-
-</section>
-
 <section>
-	<h3>Selecting the Time Zone using the Local Time Offset</h3>
+	<h3>General Recommendations</h3>
 	
-	<p>Most countries are either small enough in area or, for practical reasons, choose to observe only a single time zone for the entire country. This means that knowing the region or country of the user is frequently sufficient to identify the time zone of the user as well. At the time this document was published, only twenty countries had more than one observed time zone. These countries are: Argentina, Australia, Brazil, Canada, Chile, Democratic Republic of the Congo, Ecuador, France, Greenland, Indonesia, Kazakhstan, Kiribati, Mexico, Micronesia, Mongolia, New Zealand, Portugal, Russia, Spain, and the United States.</p>
+	<p class="advisement">Whenever possible, use [=UTC=] or choose a consistent time zone when creating time-based content or data value so that values from discrete sources can be compared more readily.</p>
+	
+	<aside class="example">
+	<p>It is much easier to work with and debug data values that can be compared visually. When values use different offsets or time zones, the user has to mentally translate the value. This can lead to mistakes. When you read the "mixed offset" list of timestamps below, is it easy to spot that the last two items are identical or that the first three are different?</p>
 
-    <p>Some special cases exist within this list:</p>
-
-    <ul>
-       <li><strong>Countries with maritime or overseas possessions</strong> Chile, Ecuador, France, New Zealand, and Portugal each have islands or other wide-ranging geographic areas far from the main part of the country. For example, Easter Island is part of Chile, the Galapagos Islands are part of Ecuador, and the Azores are part of Portugal. These offshore possessions are the source of additional time zones in each of these countries.</li>
-       <li><strong>France</strong> France is a special case of the above. There are several regions that are part of France, even though they might have their own ISO 3166-1 code. These include Reunion Island (in the Indian Ocean) and French Guiana (in South America). Additionally, French Polynesia is divided into three time zones.</li>
+	<table>
+		<thead>
+		<tr>
+			<th>Mixed Offsets</th>
+			<th style="padding-left: 30px">Same Offset</th>
+		</tr>
+		</thead>
+        <tbody>
+			<tr>
+				<td>
+<code>
+2007-01-01T<strong>01:00:00.000</strong>-01:00<br>
+2007-01-01T<strong>01:00:00.000</strong>Z<br>
+2007-01-01T<strong>01:00:00.000</strong>+01:00<br>
+2006-12-31T<strong>23:00:00.000</strong>-01:00
+</code>
+				</td>
+				<td style="padding-left: 30px">
+<code>
+2007-01-01T<strong>02:00:00</strong>Z<br>
+2007-01-01T<strong>01:00:00</strong>Z<br>
+2007-01-01T<strong>00:00:00</strong>Z<br>
+2007-01-01T<strong>00:00:00</strong>Z
+</code>
+				</td>
+			</tr>
+        </tbody>		
+	</table>
+	</aside>
+	
+	<p class="advisement">Bear in mind best practices to assist users in selecting their time zone, including keeping track of their preferences.</p>
+	
+	<p>Some best practices when implementing time zone selection and management:
+	
+	<ul>
+	  <li>Allow the user to choose a time zone and keep it associated with the user's session or profile if possible.
+      <li>Consider using exemplar cities to help users identify the time zone.
+      <li>Use the country as a hint, since most countries <a href="#select-lto">have only a single time zone</a>.
+      <li>Omit historical time zones whenever possible.
+      <li>Use IP-geolocation, cellular radio country code, GPS data, or other external data sources if available.
     </ul>
+    </p>
+    
+    <p class="advisement">If you have data that includes implicit and fixed explicit [=local time offsets=], before applying any date- or time-sensitive operations, adjust the zone offset of the implicit data to UTC with functions for zone offset adjustment, cf. <a data-cite="xpath-functions#dateTime-arithmetic">this section</a> in [[[xpath-functions]]].</p>
+    
+    <p class="advisement">If you have data that contains both implicit and fixed explicit [=local time offsets=] and you do not want to adjust the data subset which already has a zone offset, make sure that you recognize this data subset, for example via the <a data-cite="xpath-functions#component-extraction-dateTime">component extraction functions</a> [[xpath-functions]].</p>
 
-    <p>Within each of the countries that observe multiple time zones, knowing the current offset and current time will usually allow you to determine the time zone accurately. An exception to this is the United States: there exist some regions, such as Arizona, whose time zone cannot be determined strictly from the current time, country/region code, and offset, although an inferred time zone will always work for current time applications (not future and past times).</p>
-</section>
+
 	
+</section>
+
+
 <section>
 <h3>Leap Seconds</h3>
 	
@@ -642,7 +719,7 @@
     <ol>
 		<li>Eventually, system clocks are updated externally by the user or via a service such as NTP. Most computer clocks exhibit some amount of clock drift anyway, so this sort of maintenance is not unusual.</li>
         <li>No list is kept of past or future leap seconds (and no list exists for dates preceding the advent of leap seconds in 1972), so software often doesn't include leap seconds when calculating the difference between two time values. For example, the difference between 12:00:00 Noon on December 31st and 12:00:00 Noon on the following January 1st will always be 86400 seconds, even if a leap second was mandated for the intervening midnight.</li>
-        <li>There may be no way to represent a leap second time value using your local incremental units and may not be a means of representing a leap second using field-based units. For example, while Java's <code>java.util.Calendar</code> class allows for a "61st" second of a minute to accommodate leap seconds, if you set a Java Calendar to <kbd>December 31, 2008 23:59:60 UTC</kbd> (a particular leap second value) and then convert that to a <code>java.util.Date</code> in order to print it out, you might see: "January 1, 2009 00:00:00 UTC" because the <code>Date</code> object cannot represent leap second values.</li>
+        <li>There may be no way to represent a leap second time value using your local incremental units and may not be a means of representing a leap second using field-based units. For example, while Java's <code>java.util.Calendar</code> class allows for a "61st" second of a minute to accommodate leap seconds, if you set a Java Calendar to the equivalent of <kbd>December 31, 2008 23:59:60 UTC</kbd> (a particular leap second value) and then convert that to a <code>java.util.Date</code> in order to print it out, you might see: "January 1, 2009 00:00:00 UTC". This is because the <code>Date</code> object is an [=incremental time=] and the code formatting the value doesn't know about the leap second.</li>
      </ol>
 
      <p>If your application cares about or is sensitive to leap seconds, special care must be taken to deal with the loss of leap second precision.</p>
