@@ -74,6 +74,7 @@
 		   currZone.textContent = fmt.resolvedOptions().timeZone;
 		   
 		   var tbody = document.getElementById('zoneOutTBody');
+		   tbody.innerHTML = '';
 
 		   for (const zone of zonesToTest) {
 			   var datefmt = new Intl.DateTimeFormat('en-US', { timeZone: zone, dateStyle: 'full' });
