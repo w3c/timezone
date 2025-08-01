@@ -459,7 +459,7 @@ int main(void)
 
 <p><a>Floating time</a> values are often serialized in various ISO8601 formats by omitting the [=local time offset=] (or time zone identifier, such as <code>Z</code> for [=UTC=]). Data types for floating time values are less common in programming languages and operating environments. Errors are often the result when a floating time value is deserialized into into an [=incremental time=] type, which ties the value to UTC.</p>
 
-<aside class="note"><a>Floating times</a> have different names in different specifications. [[HTML]] calls a <a>floating time</a> value a <a data-cite="html#date-time-local">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
+<aside class="note"><a>Floating times</a> have different names in different specifications. [[HTML]] calls a <a>floating time</a> value a <a data-cite="https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#local-dates-and-times">local date and time</a>. JavaScript Temporal calls these values <em>plain</em> dates or times.</aside>
 
 <aside class="example" title="Floating Time">
    <p>For example, the French national holiday Bastille Day (<em lang="fr">Fête Nationale</em>) is observed on July 14th each year. Thus the 2022 occurence might be represented by the value <code>2022-07-14</code>. However, the observation of the holiday isn't tied to any specific location. Instead, its meaning "floats" based on locally observed midnight.</p>
@@ -802,9 +802,9 @@ int main(void)
 <section id="leap-seconds">
 <h3>Leap Seconds</h3>
 	
-	<p>One quirk of timekeeping is the need for leap seconds. The Earth's rotation is not even and, in general, is slowing down. To keep <a>observed time</a> and <a>incremental time</a> in sync, the [<a href="http://maia.usno.navy.mil/">International Earth Rotation Service</a>] occasionally mandates a "leap second". A leap second usually occurs once or sometimes twice per year and always takes the form of an additional second added to the last minute of the day. Usually the leap second is added to December 31st or June 30th.</p>
+	<p>One quirk of timekeeping is the need for leap seconds. The Earth's rotation is not even and, in general, is slowing down. To keep <a>observed time</a> and <a>incremental time</a> in sync, the [<a href="https://www.iers.org">International Earth Rotation Service</a>] occasionally mandates a "leap second". A leap second usually occurs once or sometimes twice per year and always takes the form of an additional second added to the last minute of the day. Usually the leap second is added to December 31st or June 30th.</p>
 
-    <p>Most incremental time values (do not keep track of leap seconds in their incremental time values. What happens is:</p>
+    <p>Most incremental time values do not keep track of leap seconds in their incremental time values. What happens is:</p>
 
     <ol>
 		<li>Eventually, system clocks are updated externally by the user or via a service such as NTP. Most computer clocks exhibit some amount of clock drift anyway, so this sort of maintenance is not unusual.</li>
