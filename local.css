@@ -6,17 +6,23 @@
 
 .unicode:link {
 	color: #FF0000;
+	color: light-dark(#FF0000, #ff7b7b);
 	background-color: #FFFFFF;
+	background-color: light-dark(#FFFFFF, transparent);
 }
 
 .unicode:visited {
 	color: #808080;
+	color: light-dark(#808080, #b3b3b3);
 	background-color: #FFFFFF;
+	background-color: light-dark(#FFFFFF, transparent);
 }
 
 .unicode:active {
 	color: #0000FF;
+	color: light-dark(#0000FF, #8ab4ff);
 	background-color: #FFFFFF;
+	background-color: light-dark(#FFFFFF, transparent);
 }
 
 em.unicode {
@@ -25,6 +31,7 @@ em.unicode {
 
 ins {
 	background-color: #FF6;
+	background-color: light-dark(#FF6, #3d3d00);
 }
 
 p.cjk-demo {
@@ -35,41 +42,48 @@ p.cjk-demo {
 
 .req {
     background-color: #FFC;
+    background-color: light-dark(#FFC, #3a3a1a);
     font-style: italic;
 }
 
 .req::before {
     content: "\1f44d \00A0 ";
     font-style: normal;
-    color: #63F;;
+    color: #63F;
+    color: light-dark(#63F, #b3a6ff);
 }
 
 .reqex {
     background-color: #FFC;
+    background-color: light-dark(#FFC, #3a3a1a);
     font-style: italic;
 }
 
 .reqex::before {
     content: "\1f44d \00A0 Req. #: ";
     font-style: normal;
-    color: #63F;;
+    color: #63F;
+    color: light-dark(#63F, #b3a6ff);
 }
 
 .gap {
     background-color: #FCF;
+    background-color: light-dark(#FCF, #3a1f3a);
     font-style: italic;
 }
 
 .gap::before {
     content: "\1f631 \00A0 ";
     font-style: normal;
-    color: #63F;;
+    color: #63F;
+    color: light-dark(#63F, #b3a6ff);
 }
 
 kbd {
    font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
    font-size: .95em;
    color: blue;
+   color: light-dark(blue, #8ab4ff);
    page-break-inside: avoid;
    hyphens: none;
    text-transform: none;
@@ -81,6 +95,7 @@ kbd {
 .summary {
     padding: 1em;
     background-color: antiquewhite;
+    background-color: light-dark(antiquewhite, #332a1f);
 }
 
 a.self {
@@ -116,30 +131,38 @@ a.self:hover {
 .definition {
     position: relative;
     background-color: #efefef;
+    background-color: light-dark(#efefef, #1f1f1f);
     padding: 0.5em;
     border: 0.5em;
     border-left: 6pt solid green;
+    border-left-color: light-dark(green, #4caf50);
     border-right: 6pt solid green;
+    border-right-color: light-dark(green, #4caf50);
     margin: 1em auto;
 }
     
 .issue-example {
     position: relative;
     background: #FBE9E9;
+    background: light-dark(#FBE9E9, #2b1717);
     padding: 0.5em;
     border: 0.5em;
     border-left: 6pt solid #E05252;
+    border-left-color: light-dark(#E05252, #f07a7a);
     border-right: 6pt solid #E05252;
+    border-right-color: light-dark(#E05252, #f07a7a);
     margin: 1em auto;
 }
 
 table.serialization-table td {
    vertical-align: top;
    border-bottom: 1px solid #ddd;
+   border-bottom-color: light-dark(#ddd, #5a5a5a);
 }
 
 table.mixed-offset-table {
    background-color: #fdfdfd;
+   background-color: light-dark(#fdfdfd, #111111);
 }
 
 table.mixed-offset-table td {
@@ -155,6 +178,7 @@ table.mixed-offset-table tbody tr td {
    font-family: Menlo, Consolas, "DejaVu Sans Mono", Monaco, monospace;
    font-size: 120%;
    color: #A52A2A;
+   color: light-dark(#A52A2A, #ffb3b3);
 }
 
 .letter_anchor {
@@ -163,6 +187,7 @@ table.mixed-offset-table tbody tr td {
     font-size: 140%;
     margin-block-start: 3em;
     color: #54A800;
+    color: light-dark(#54A800, #9ccc65);
     }
 #link_list a {
     font-weight: bold;
@@ -173,9 +198,11 @@ table.mixed-offset-table tbody tr td {
     display: inline-block;
     text-align: center;
     color: #54A800;
+    color: light-dark(#54A800, #9ccc65);
     }
 #link_list a:hover {
     background-color: antiquewhite;
+    background-color: light-dark(antiquewhite, #332a1f);
     }
 .termref {
     font-style: italic;
